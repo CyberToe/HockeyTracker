@@ -90,10 +90,20 @@ main {
     background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
 }
 
+/* Action Bar */
+.action-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+    background: #f8f9fa;
+    padding: 8px;
+    border-radius: 8px;
+}
+
 /* Control Panel */
 .control-panel {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 8px;
     margin-bottom: 8px;
 }
@@ -138,20 +148,15 @@ main {
     color: white;
 }
 
-.action-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.action-btn {
-    padding: 6px 10px;
+.action-bar .action-btn {
+    flex: 1;
+    padding: 8px 15px;
     border: none;
     font-weight: bold;
     border-radius: 6px;
     cursor: pointer;
     transition: all 0.3s ease;
-    font-size: 0.8em;
+    font-size: 0.85em;
 }
 
 .action-btn:hover {
@@ -253,14 +258,62 @@ main {
     border-width: 3px;
 }
 
-/* Rink Container */
-.rink-container {
+/* Rink and Stats Container */
+.rink-stats-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 8px;
     background: #f8f9fa;
     padding: 8px;
     border-radius: 8px;
-    margin-bottom: 8px;
+}
+
+/* Side Stats */
+.side-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: white;
+    padding: 10px;
+    border-radius: 8px;
+    min-width: 80px;
+    text-align: center;
+}
+
+.side-stats h4 {
+    color: #667eea;
+    font-size: 0.9em;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    padding: 6px;
+    background: #f8f9fa;
+    border-radius: 6px;
+}
+
+.stat-label {
+    color: #666;
+    font-size: 0.7em;
+    margin-bottom: 3px;
+}
+
+.stat-value {
+    font-size: 1.4em;
+    font-weight: bold;
+    color: #667eea;
+}
+
+/* Rink Container */
+.rink-container {
+    flex: 1;
     display: flex;
     justify-content: center;
+    align-items: center;
 }
 
 #rinkCanvas {
@@ -270,52 +323,6 @@ main {
     background: white;
     border-radius: 6px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
-
-/* Shot Counter */
-.shot-counter {
-    display: flex;
-    justify-content: space-around;
-    gap: 10px;
-    background: #f8f9fa;
-    padding: 8px;
-    border-radius: 8px;
-    margin-bottom: 6px;
-}
-
-.counter-group {
-    flex: 1;
-    text-align: center;
-}
-
-.counter-group h4 {
-    color: #667eea;
-    font-size: 0.85em;
-    margin-bottom: 6px;
-}
-
-.counter-stats {
-    display: flex;
-    justify-content: space-around;
-    gap: 6px;
-}
-
-.counter-item {
-    text-align: center;
-}
-
-.counter-label {
-    display: block;
-    color: #666;
-    font-size: 0.65em;
-    margin-bottom: 2px;
-}
-
-.counter-value {
-    display: block;
-    font-size: 1.1em;
-    font-weight: bold;
-    color: #667eea;
 }
 
 footer {
@@ -349,6 +356,15 @@ footer {
         padding: 6px;
     }
 
+    .action-bar {
+        flex-wrap: wrap;
+    }
+
+    .action-bar .action-btn {
+        flex: 1 1 45%;
+        font-size: 0.8em;
+    }
+
     .control-panel {
         grid-template-columns: 1fr;
     }
@@ -357,13 +373,18 @@ footer {
         grid-template-columns: repeat(2, 1fr);
     }
 
-    .shot-counter {
+    .rink-stats-container {
         flex-direction: column;
-        gap: 8px;
     }
 
-    .counter-value {
-        font-size: 1em;
+    .side-stats {
+        width: 100%;
+        flex-direction: row;
+        justify-content: space-around;
+    }
+
+    .stat-value {
+        font-size: 1.2em;
     }
 }
 
@@ -372,12 +393,30 @@ footer {
         font-size: 1.1em;
     }
 
+    .action-bar .action-btn {
+        flex: 1 1 100%;
+        font-size: 0.75em;
+        padding: 6px 10px;
+    }
+
     .toggle-buttons {
         flex-direction: column;
     }
 
     .legend-items {
         grid-template-columns: 1fr;
+    }
+
+    .stat-item {
+        padding: 4px;
+    }
+
+    .stat-label {
+        font-size: 0.65em;
+    }
+
+    .stat-value {
+        font-size: 1em;
     }
 }
 

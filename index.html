@@ -19,6 +19,14 @@
                 <span id="statusText">SCORE - FOR</span>
             </div>
 
+            <!-- Action Buttons Bar -->
+            <div class="action-bar">
+                <button id="undoBtn" class="action-btn undo-btn">UNDO</button>
+                <button id="resetBtn" class="action-btn reset-btn">RESET</button>
+                <button id="exportBtn" class="action-btn export-btn">EXPORT</button>
+                <button id="importBtn" class="action-btn import-btn">IMPORT</button>
+            </div>
+
             <!-- Control Panel -->
             <div class="control-panel">
                 <!-- Result Toggles -->
@@ -36,17 +44,6 @@
                     <div class="toggle-buttons">
                         <button id="forBtn" class="toggle-btn active" data-state="for">FOR</button>
                         <button id="againstBtn" class="toggle-btn" data-state="against">AGAINST</button>
-                    </div>
-                </div>
-
-                <!-- Action Buttons -->
-                <div class="control-group">
-                    <h3>Actions</h3>
-                    <div class="action-buttons">
-                        <button id="undoBtn" class="action-btn undo-btn">UNDO</button>
-                        <button id="resetBtn" class="action-btn reset-btn">RESET</button>
-                        <button id="exportBtn" class="action-btn export-btn">EXPORT</button>
-                        <button id="importBtn" class="action-btn import-btn">IMPORT</button>
                     </div>
                 </div>
             </div>
@@ -74,45 +71,44 @@
                 </div>
             </div>
 
-            <!-- Rink Canvas -->
-            <div class="rink-container">
-                <canvas id="rinkCanvas" width="800" height="425"></canvas>
-            </div>
-
-            <!-- Shot Counter -->
-            <div class="shot-counter">
-                <div class="counter-group">
+            <!-- Rink and Stats Container -->
+            <div class="rink-stats-container">
+                <!-- FOR Stats (Left) -->
+                <div class="side-stats left-stats">
                     <h4>FOR</h4>
-                    <div class="counter-stats">
-                        <div class="counter-item">
-                            <span class="counter-label">Shots:</span>
-                            <span id="forShots" class="counter-value">0</span>
-                        </div>
-                        <div class="counter-item">
-                            <span class="counter-label">Scores:</span>
-                            <span id="forScores" class="counter-value">0</span>
-                        </div>
-                        <div class="counter-item">
-                            <span class="counter-label">Misses:</span>
-                            <span id="forMisses" class="counter-value">0</span>
-                        </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Shots</span>
+                        <span id="forShots" class="stat-value">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Scores</span>
+                        <span id="forScores" class="stat-value">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Misses</span>
+                        <span id="forMisses" class="stat-value">0</span>
                     </div>
                 </div>
-                <div class="counter-group">
+
+                <!-- Rink Canvas -->
+                <div class="rink-container">
+                    <canvas id="rinkCanvas" width="800" height="425"></canvas>
+                </div>
+
+                <!-- AGAINST Stats (Right) -->
+                <div class="side-stats right-stats">
                     <h4>AGAINST</h4>
-                    <div class="counter-stats">
-                        <div class="counter-item">
-                            <span class="counter-label">Shots:</span>
-                            <span id="againstShots" class="counter-value">0</span>
-                        </div>
-                        <div class="counter-item">
-                            <span class="counter-label">Scores:</span>
-                            <span id="againstScores" class="counter-value">0</span>
-                        </div>
-                        <div class="counter-item">
-                            <span class="counter-label">Misses:</span>
-                            <span id="againstMisses" class="counter-value">0</span>
-                        </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Shots</span>
+                        <span id="againstShots" class="stat-value">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Scores</span>
+                        <span id="againstScores" class="stat-value">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Misses</span>
+                        <span id="againstMisses" class="stat-value">0</span>
                     </div>
                 </div>
             </div>
