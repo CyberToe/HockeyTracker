@@ -60,6 +60,48 @@ main {
     padding: 8px;
 }
 
+/* Tab Navigation */
+.tab-navigation {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+    background: #f8f9fa;
+    padding: 8px;
+    border-radius: 8px;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 10px 20px;
+    border: 2px solid #667eea;
+    background: white;
+    color: #667eea;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9em;
+}
+
+.tab-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.tab-btn.active {
+    background: #667eea;
+    color: white;
+}
+
+/* Tab Content */
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
 /* Status Display */
 .status-display {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -145,6 +187,36 @@ main {
 
 .toggle-btn.active {
     background: #667eea;
+    color: white;
+}
+
+/* Player Buttons */
+.player-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.player-btn {
+    padding: 6px 12px;
+    border: 2px solid #28a745;
+    background: white;
+    color: #28a745;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.8em;
+}
+
+.player-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.player-btn.active {
+    background: #28a745;
     color: white;
 }
 
@@ -314,6 +386,7 @@ main {
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
 }
 
 #rinkCanvas {
@@ -325,12 +398,204 @@ main {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
+/* Shot Tooltip */
+.shot-tooltip {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.85em;
+    pointer-events: none;
+    display: none;
+    z-index: 1000;
+    white-space: nowrap;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.shot-tooltip.visible {
+    display: block;
+}
+
+.shot-tooltip .player-name {
+    font-weight: bold;
+    color: #38ef7d;
+    font-size: 1.1em;
+}
+
+.shot-tooltip .against-label {
+    font-weight: bold;
+    color: #ff6a00;
+    font-size: 1.1em;
+}
+
+.shot-tooltip .shot-result {
+    color: #ccc;
+    font-size: 0.9em;
+}
+
+.shot-tooltip .shot-time {
+    color: #999;
+    font-size: 0.8em;
+    margin-top: 3px;
+}
+
 footer {
     background: #f8f9fa;
     padding: 6px;
     text-align: center;
     color: #666;
     font-size: 0.7em;
+}
+
+/* Players Management */
+.players-management {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.players-management h2 {
+    color: #667eea;
+    font-size: 1.3em;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.add-player-section {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.player-actions {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.player-actions .action-btn {
+    flex: 1;
+    padding: 10px 15px;
+    font-size: 0.9em;
+}
+
+#playerNameInput {
+    flex: 1;
+    padding: 10px;
+    border: 2px solid #667eea;
+    border-radius: 6px;
+    font-size: 0.9em;
+    outline: none;
+}
+
+#playerNameInput:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 8px rgba(40, 167, 69, 0.3);
+}
+
+.players-list {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.players-list h3 {
+    color: #667eea;
+    font-size: 1.1em;
+    margin-bottom: 12px;
+}
+
+.players-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+}
+
+.player-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    background: #f8f9fa;
+    padding: 12px;
+    border-radius: 8px;
+    border: 2px solid #28a745;
+    transition: all 0.3s ease;
+}
+
+.player-item:hover {
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.2);
+    transform: translateY(-2px);
+}
+
+.player-info {
+    flex: 1;
+}
+
+.player-item .player-name {
+    font-weight: bold;
+    color: #28a745;
+    font-size: 1.1em;
+    margin-bottom: 8px;
+}
+
+.player-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 6px;
+}
+
+.player-stats .stat-detail {
+    font-size: 0.75em;
+    color: #666;
+    background: white;
+    padding: 3px 8px;
+    border-radius: 4px;
+}
+
+.player-stats .stat-detail strong {
+    color: #333;
+}
+
+.player-stats .percentage {
+    background: #667eea;
+    color: white;
+}
+
+.player-stats .percentage strong {
+    color: white;
+}
+
+.player-item .remove-btn {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.75em;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    margin-left: 10px;
+}
+
+.player-item .remove-btn:hover {
+    background: #c82333;
+    transform: translateY(-2px);
+}
+
+.no-players {
+    color: #666;
+    font-style: italic;
+    text-align: center;
+    padding: 20px;
 }
 
 /* Responsive Design */
@@ -385,6 +650,23 @@ footer {
 
     .stat-value {
         font-size: 1.2em;
+    }
+
+    .player-buttons {
+        max-height: 150px;
+        overflow-y: auto;
+    }
+
+    .add-player-section {
+        flex-direction: column;
+    }
+
+    .player-actions {
+        flex-direction: column;
+    }
+
+    .players-items {
+        grid-template-columns: 1fr;
     }
 }
 

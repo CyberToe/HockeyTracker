@@ -1,0 +1,68 @@
+Business Requirements Document (BRD)
+Project: Hockey Shot Tracker Web Application
+Version: 1.2
+Date: [Insert Date]
+Author: Paul Leblanc
+1. Executive Summary
+
+This project defines a browser-based application that allows users to record hockey shot results on an interactive rink.
+Users can toggle between Score / Miss and For / Against states, mark shot locations, and now export or import game data for saving or restoring sessions.
+2. Objectives
+
+    Let users visually log shots (location + result).
+
+    Distinguish shots for or against the team.
+
+    Provide simple save/restore functions via file export/import.
+
+    Maintain a responsive and intuitive interface usable mid-game.
+
+3. Scope
+In Scope
+
+    Responsive web app, no authentication required.
+
+    Six primary interactive controls:
+
+        SCORE!
+
+        MISS
+
+        FOR
+
+        AGAINST
+
+        RESET
+
+        EXPORT / IMPORT
+
+    Rink image as clickable canvas.
+
+    Visual markers for each shot (different color/shape per combined state).
+
+    Export current session data to downloadable JSON file.
+
+    Import previously saved JSON file to restore all shots and states.
+
+Out of Scope
+
+    Backend database or user accounts.
+
+    Real-time multiplayer syncing.
+
+    Analytics, charts, or statistics (future).
+
+4. Functional Requirements
+ID	Name	Description	Priority
+FR-1	Toggle: Score/Miss	Two buttons toggle between “Score” and “Miss.”	High
+FR-2	Toggle: For/Against	Two buttons toggle between “For” and “Against.”	High
+FR-3	Combined State Logic	Four valid state combinations: Score + For, Score + Against, Miss + For, Miss + Against.	High
+FR-4	Visual Feedback	Background and status label reflect current combined state.	High
+FR-5	Rink Interaction	Clicking rink image creates state-based marker.	High
+FR-6	Marker Styling	Unique style per state combination.	High
+FR-7	Data Tracking	Each shot stored as object: {id,x,y,resultState,teamState,timestamp}.	High
+FR-8	Reset	Clears all shots and data array.	Medium
+FR-9	Export	User clicks EXPORT → application generates downloadable .json file containing all shot objects and session metadata.	High
+FR-10	Import	User clicks IMPORT → selects a .json file → app validates structure and repopulates markers + data array.	High
+FR-11	Data Validation	Imported file must contain valid JSON array with expected keys. Invalid files trigger an error message.	High
+FR-12	Responsiveness	Works on desktop, tablet, and mobile.	High

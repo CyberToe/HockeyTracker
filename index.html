@@ -14,10 +14,18 @@
         </header>
 
         <main>
-            <!-- Status Display -->
-            <div id="statusDisplay" class="status-display">
-                <span id="statusText">SCORE - FOR</span>
+            <!-- Tab Navigation -->
+            <div class="tab-navigation">
+                <button id="rinkTab" class="tab-btn active">Rink</button>
+                <button id="playersTab" class="tab-btn">Players</button>
             </div>
+
+            <!-- Rink View -->
+            <div id="rinkView" class="tab-content active">
+                <!-- Status Display -->
+                <div id="statusDisplay" class="status-display">
+                    <span id="statusText">SCORE - AGAINST</span>
+                </div>
 
             <!-- Action Buttons Bar -->
             <div class="action-bar">
@@ -38,11 +46,13 @@
                     </div>
                 </div>
 
-                <!-- Team Toggles -->
-                <div class="control-group">
-                    <h3>Team</h3>
+                <!-- Player/Team Selection -->
+                <div class="control-group player-selection-group">
+                    <h3>Player / Team</h3>
+                    <div id="playerButtons" class="player-buttons">
+                        <!-- Player buttons will be dynamically added here -->
+                    </div>
                     <div class="toggle-buttons">
-                        <button id="forBtn" class="toggle-btn active" data-state="for">FOR</button>
                         <button id="againstBtn" class="toggle-btn" data-state="against">AGAINST</button>
                     </div>
                 </div>
@@ -93,6 +103,7 @@
                 <!-- Rink Canvas -->
                 <div class="rink-container">
                     <canvas id="rinkCanvas" width="800" height="425"></canvas>
+                    <div id="shotTooltip" class="shot-tooltip"></div>
                 </div>
 
                 <!-- AGAINST Stats (Right) -->
@@ -112,6 +123,38 @@
                     </div>
                 </div>
             </div>
+            </div>
+            <!-- End Rink View -->
+
+            <!-- Players View -->
+            <div id="playersView" class="tab-content">
+                <div class="players-management">
+                    <h2>Manage Team Players</h2>
+                    
+                    <!-- Add Player Form -->
+                    <div class="add-player-section">
+                        <input type="text" id="playerNameInput" placeholder="Enter player name" maxlength="20">
+                        <button id="addPlayerBtn" class="action-btn export-btn">Add Player</button>
+                    </div>
+
+                    <!-- Player List Actions -->
+                    <div class="player-actions">
+                        <button id="exportPlayersBtn" class="action-btn export-btn">Export Players</button>
+                        <button id="importPlayersBtn" class="action-btn import-btn">Import Players</button>
+                        <button id="clearPlayersBtn" class="action-btn reset-btn">Clear All</button>
+                    </div>
+
+                    <!-- Players List -->
+                    <div class="players-list">
+                        <h3>Current Players:</h3>
+                        <div id="playersList" class="players-items">
+                            <p class="no-players">No players added yet. Add players above to start tracking individual performance.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Players View -->
+
         </main>
 
         <footer>
@@ -119,8 +162,9 @@
         </footer>
     </div>
 
-    <!-- Hidden File Input -->
+    <!-- Hidden File Inputs -->
     <input type="file" id="fileInput" accept=".json" style="display: none;">
+    <input type="file" id="playersFileInput" accept=".json" style="display: none;">
 
     <script src="app.js"></script>
 </body>
