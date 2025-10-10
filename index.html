@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hockey Shot Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏒 Hockey Shot Tracker</h1>
+            <p class="subtitle">Track shots on the ice in real-time</p>
+        </header>
+
+        <main>
+            <!-- Status Display -->
+            <div id="statusDisplay" class="status-display">
+                <span id="statusText">SCORE - FOR</span>
+            </div>
+
+            <!-- Control Panel -->
+            <div class="control-panel">
+                <!-- Result Toggles -->
+                <div class="control-group">
+                    <h3>Result</h3>
+                    <div class="toggle-buttons">
+                        <button id="scoreBtn" class="toggle-btn active" data-state="score">SCORE!</button>
+                        <button id="missBtn" class="toggle-btn" data-state="miss">MISS</button>
+                    </div>
+                </div>
+
+                <!-- Team Toggles -->
+                <div class="control-group">
+                    <h3>Team</h3>
+                    <div class="toggle-buttons">
+                        <button id="forBtn" class="toggle-btn active" data-state="for">FOR</button>
+                        <button id="againstBtn" class="toggle-btn" data-state="against">AGAINST</button>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="control-group">
+                    <h3>Actions</h3>
+                    <div class="action-buttons">
+                        <button id="undoBtn" class="action-btn undo-btn">UNDO</button>
+                        <button id="resetBtn" class="action-btn reset-btn">RESET</button>
+                        <button id="exportBtn" class="action-btn export-btn">EXPORT</button>
+                        <button id="importBtn" class="action-btn import-btn">IMPORT</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Legend -->
+            <div class="legend">
+                <h3>Legend</h3>
+                <div class="legend-items">
+                    <div class="legend-item">
+                        <div class="marker-preview score-for"></div>
+                        <span>Score - For</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="marker-preview score-against"></div>
+                        <span>Score - Against</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="marker-preview miss-for"></div>
+                        <span>Miss - For</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="marker-preview miss-against"></div>
+                        <span>Miss - Against</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rink Canvas -->
+            <div class="rink-container">
+                <canvas id="rinkCanvas" width="800" height="425"></canvas>
+            </div>
+
+            <!-- Shot Counter -->
+            <div class="shot-counter">
+                <div class="counter-group">
+                    <h4>FOR</h4>
+                    <div class="counter-stats">
+                        <div class="counter-item">
+                            <span class="counter-label">Shots:</span>
+                            <span id="forShots" class="counter-value">0</span>
+                        </div>
+                        <div class="counter-item">
+                            <span class="counter-label">Scores:</span>
+                            <span id="forScores" class="counter-value">0</span>
+                        </div>
+                        <div class="counter-item">
+                            <span class="counter-label">Misses:</span>
+                            <span id="forMisses" class="counter-value">0</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="counter-group">
+                    <h4>AGAINST</h4>
+                    <div class="counter-stats">
+                        <div class="counter-item">
+                            <span class="counter-label">Shots:</span>
+                            <span id="againstShots" class="counter-value">0</span>
+                        </div>
+                        <div class="counter-item">
+                            <span class="counter-label">Scores:</span>
+                            <span id="againstScores" class="counter-value">0</span>
+                        </div>
+                        <div class="counter-item">
+                            <span class="counter-label">Misses:</span>
+                            <span id="againstMisses" class="counter-value">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>Click on the rink to place shot markers based on the selected state</p>
+        </footer>
+    </div>
+
+    <!-- Hidden File Input -->
+    <input type="file" id="fileInput" accept=".json" style="display: none;">
+
+    <script src="app.js"></script>
+</body>
+</html>
+
+
