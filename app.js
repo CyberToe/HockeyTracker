@@ -8,6 +8,7 @@ let currentState = {
 let shots = [];
 let shotIdCounter = 0;
 let players = []; // Array of player names
+let gameName = ''; // Current game name
 
 // Canvas setup
 const canvas = document.getElementById('rinkCanvas');
@@ -48,6 +49,7 @@ const importPlayersBtn = document.getElementById('importPlayersBtn');
 const clearPlayersBtn = document.getElementById('clearPlayersBtn');
 const playersFileInput = document.getElementById('playersFileInput');
 const shotTooltip = document.getElementById('shotTooltip');
+const gameNameInput = document.getElementById('gameNameInput');
 
 // Modal elements
 const customModal = document.getElementById('customModal');
@@ -149,13 +151,17 @@ function loadShotsFromStorage() {
         const data = JSON.parse(saved);
         shots = data.shots || [];
         shotIdCounter = data.shotIdCounter || 0;
+        gameName = data.gameName || '';
+        gameNameInput.value = gameName;
     }
 }
 
 function saveShotsToStorage() {
+    gameName = gameNameInput.value.trim();
     const data = {
         shots: shots,
-        shotIdCounter: shotIdCounter
+        shotIdCounter: shotIdCounter,
+        gameName: gameName
     };
     localStorage.setItem('hockeyTrackerShots', JSON.stringify(data));
 }
@@ -731,9 +737,12 @@ async function exportData() {
         return;
     }
     
+    gameName = gameNameInput.value.trim();
+    
     const exportData = {
         version: '1.0',
         exportDate: new Date().toISOString(),
+        gameName: gameName || 'Unnamed Game',
         totalShots: shots.length,
         shots: shots
     };
@@ -744,7 +753,17 @@ async function exportData() {
     
     const link = document.createElement('a');
     link.href = url;
-    link.download = `hockey-shots-${Date.now()}.json`;
+    
+    // Create filename with game name if available
+    let filename = 'hockey-tracker';
+    if (gameName) {
+        // Sanitize game name for filename (remove special characters)
+        const sanitizedName = gameName.replace(/[^a-z0-9]/gi, '-').toLowerCase();
+        filename = `hockey-tracker-${sanitizedName}`;
+    }
+    filename += `-${Date.now()}.json`;
+    
+    link.download = filename;
     link.click();
     
     URL.revokeObjectURL(url);
@@ -797,6 +816,13 @@ function handleFileSelect(event) {
             const importedCount = data.shots.length;
             shots = [...shots, ...data.shots];
             shotIdCounter = Math.max(...shots.map(s => s.id), 0) + 1;
+            
+            // If game name is in imported data and current game name is empty, use imported name
+            if (data.gameName && !gameNameInput.value.trim()) {
+                gameName = data.gameName;
+                gameNameInput.value = gameName;
+            }
+            
             drawRink();
             updateCounters();
             saveShotsToStorage();
@@ -804,7 +830,12 @@ function handleFileSelect(event) {
             if (playersView.classList.contains('active')) {
                 renderPlayersList();
             }
-            await showAlert('Success', `Successfully imported ${importedCount} shots! Total shots: ${shots.length}`);
+            
+            let message = `Successfully imported ${importedCount} shots! Total shots: ${shots.length}`;
+            if (data.gameName) {
+                message += `\n\nGame: ${data.gameName}`;
+            }
+            await showAlert('Success', message);
             
         } catch (error) {
             await showAlert('Import Failed', `${error.message}\n\nPlease select a valid Hockey Shot Tracker JSON file.`);
@@ -853,6 +884,10 @@ function attachEventListeners() {
     importPlayersBtn.addEventListener('click', importPlayers);
     clearPlayersBtn.addEventListener('click', clearAllPlayers);
     playersFileInput.addEventListener('change', handlePlayerFileSelect);
+    
+    // Game name auto-save
+    gameNameInput.addEventListener('change', saveShotsToStorage);
+    gameNameInput.addEventListener('blur', saveShotsToStorage);
 }
 
 // Start the app

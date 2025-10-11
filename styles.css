@@ -102,6 +102,39 @@ main {
     display: block;
 }
 
+/* Game Name Section */
+.game-name-section {
+    background: #f8f9fa;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.game-name-section label {
+    font-weight: bold;
+    color: #667eea;
+    font-size: 0.9em;
+    white-space: nowrap;
+}
+
+#gameNameInput {
+    flex: 1;
+    padding: 8px 12px;
+    border: 2px solid #667eea;
+    border-radius: 6px;
+    font-size: 0.9em;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+#gameNameInput:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 8px rgba(40, 167, 69, 0.3);
+}
+
 /* Status Display */
 .status-display {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -667,6 +700,15 @@ footer {
 
     .players-items {
         grid-template-columns: 1fr;
+    }
+
+    .game-name-section {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .game-name-section label {
+        margin-bottom: 5px;
     }
 }
 
