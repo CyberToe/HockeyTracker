@@ -16,12 +16,41 @@
         <main>
             <!-- Tab Navigation -->
             <div class="tab-navigation">
-                <button id="rinkTab" class="tab-btn active">Rink</button>
-                <button id="playersTab" class="tab-btn">Players</button>
+                <button id="playersTab" class="tab-btn active">Players</button>
+                <button id="rinkTab" class="tab-btn">Rink</button>
             </div>
 
+            <!-- Players View -->
+            <div id="playersView" class="tab-content active">
+                <div class="players-management">
+                    <h2>Manage Team Players</h2>
+                    
+                    <!-- Add Player Form -->
+                    <div class="add-player-section">
+                        <input type="text" id="playerNameInput" placeholder="Enter player name" maxlength="20">
+                        <button id="addPlayerBtn" class="action-btn export-btn">Add Player</button>
+                    </div>
+
+                    <!-- Player List Actions -->
+                    <div class="player-actions">
+                        <button id="exportPlayersBtn" class="action-btn export-btn">Export Players</button>
+                        <button id="importPlayersBtn" class="action-btn import-btn">Import Players</button>
+                        <button id="clearPlayersBtn" class="action-btn reset-btn">Clear All</button>
+                    </div>
+
+                    <!-- Players List -->
+                    <div class="players-list">
+                        <h3>Current Players:</h3>
+                        <div id="playersList" class="players-items">
+                            <p class="no-players">No players added yet. Add players above to start tracking individual performance.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Players View -->
+
             <!-- Rink View -->
-            <div id="rinkView" class="tab-content active">
+            <div id="rinkView" class="tab-content">
                 <!-- Status Display -->
                 <div id="statusDisplay" class="status-display">
                     <span id="statusText">SCORE - AGAINST</span>
@@ -126,35 +155,6 @@
             </div>
             <!-- End Rink View -->
 
-            <!-- Players View -->
-            <div id="playersView" class="tab-content">
-                <div class="players-management">
-                    <h2>Manage Team Players</h2>
-                    
-                    <!-- Add Player Form -->
-                    <div class="add-player-section">
-                        <input type="text" id="playerNameInput" placeholder="Enter player name" maxlength="20">
-                        <button id="addPlayerBtn" class="action-btn export-btn">Add Player</button>
-                    </div>
-
-                    <!-- Player List Actions -->
-                    <div class="player-actions">
-                        <button id="exportPlayersBtn" class="action-btn export-btn">Export Players</button>
-                        <button id="importPlayersBtn" class="action-btn import-btn">Import Players</button>
-                        <button id="clearPlayersBtn" class="action-btn reset-btn">Clear All</button>
-                    </div>
-
-                    <!-- Players List -->
-                    <div class="players-list">
-                        <h3>Current Players:</h3>
-                        <div id="playersList" class="players-items">
-                            <p class="no-players">No players added yet. Add players above to start tracking individual performance.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- End Players View -->
-
         </main>
 
         <footer>
@@ -165,6 +165,23 @@
     <!-- Hidden File Inputs -->
     <input type="file" id="fileInput" accept=".json" style="display: none;">
     <input type="file" id="playersFileInput" accept=".json" style="display: none;">
+
+    <!-- Custom Modal Dialog -->
+    <div id="customModal" class="custom-modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Alert</h3>
+            </div>
+            <div class="modal-body">
+                <p id="modalMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button id="modalCancelBtn" class="modal-btn modal-cancel-btn">Cancel</button>
+                <button id="modalOkBtn" class="modal-btn modal-ok-btn">OK</button>
+            </div>
+        </div>
+    </div>
 
     <script src="app.js"></script>
 </body>

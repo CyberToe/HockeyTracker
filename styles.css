@@ -702,7 +702,136 @@ footer {
     }
 }
 
+/* Custom Modal */
+.custom-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+}
+
+.custom-modal.show {
+    display: block;
+}
+
+.modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    min-width: 320px;
+    max-width: 500px;
+    animation: slideUp 0.3s ease;
+}
+
+.modal-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px 20px;
+    border-radius: 12px 12px 0 0;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 1.2em;
+}
+
+.modal-body {
+    padding: 25px 20px;
+    color: #333;
+    font-size: 0.95em;
+    line-height: 1.5;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.modal-body p {
+    margin: 0;
+    white-space: pre-line;
+}
+
+.modal-footer {
+    padding: 15px 20px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.modal-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9em;
+}
+
+.modal-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.modal-ok-btn {
+    background: #667eea;
+    color: white;
+}
+
+.modal-ok-btn:hover {
+    background: #5568d3;
+}
+
+.modal-cancel-btn {
+    background: #e0e0e0;
+    color: #333;
+}
+
+.modal-cancel-btn:hover {
+    background: #d0d0d0;
+}
+
+.modal-cancel-btn.hidden {
+    display: none;
+}
+
 /* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translate(-50%, -40%);
+        opacity: 0;
+    }
+    to {
+        transform: translate(-50%, -50%);
+        opacity: 1;
+    }
+}
+
 @keyframes markerAppear {
     from {
         transform: scale(0);
@@ -716,6 +845,27 @@ footer {
 
 .marker-appear {
     animation: markerAppear 0.3s ease;
+}
+
+/* Responsive Modal */
+@media (max-width: 480px) {
+    .modal-content {
+        min-width: 90%;
+        max-width: 90%;
+    }
+    
+    .modal-body {
+        padding: 20px 15px;
+        font-size: 0.9em;
+    }
+    
+    .modal-footer {
+        flex-direction: column;
+    }
+    
+    .modal-btn {
+        width: 100%;
+    }
 }
 
 

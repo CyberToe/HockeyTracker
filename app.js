@@ -49,9 +49,63 @@ const clearPlayersBtn = document.getElementById('clearPlayersBtn');
 const playersFileInput = document.getElementById('playersFileInput');
 const shotTooltip = document.getElementById('shotTooltip');
 
+// Modal elements
+const customModal = document.getElementById('customModal');
+const modalTitle = document.getElementById('modalTitle');
+const modalMessage = document.getElementById('modalMessage');
+const modalOkBtn = document.getElementById('modalOkBtn');
+const modalCancelBtn = document.getElementById('modalCancelBtn');
+
+// Custom Modal Functions
+function showAlert(title, message) {
+    return new Promise((resolve) => {
+        modalTitle.textContent = title;
+        modalMessage.textContent = message;
+        modalCancelBtn.classList.add('hidden');
+        modalOkBtn.textContent = 'OK';
+        customModal.classList.add('show');
+        
+        const handleOk = () => {
+            customModal.classList.remove('show');
+            modalOkBtn.removeEventListener('click', handleOk);
+            resolve(true);
+        };
+        
+        modalOkBtn.addEventListener('click', handleOk);
+    });
+}
+
+function showConfirm(title, message) {
+    return new Promise((resolve) => {
+        modalTitle.textContent = title;
+        modalMessage.textContent = message;
+        modalCancelBtn.classList.remove('hidden');
+        modalOkBtn.textContent = 'OK';
+        customModal.classList.add('show');
+        
+        const handleOk = () => {
+            customModal.classList.remove('show');
+            modalOkBtn.removeEventListener('click', handleOk);
+            modalCancelBtn.removeEventListener('click', handleCancel);
+            resolve(true);
+        };
+        
+        const handleCancel = () => {
+            customModal.classList.remove('show');
+            modalOkBtn.removeEventListener('click', handleOk);
+            modalCancelBtn.removeEventListener('click', handleCancel);
+            resolve(false);
+        };
+        
+        modalOkBtn.addEventListener('click', handleOk);
+        modalCancelBtn.addEventListener('click', handleCancel);
+    });
+}
+
 // Initialize
 function init() {
     loadPlayersFromStorage();
+    loadShotsFromStorage();
     renderPlayerButtons();
     renderPlayersList();
     drawRink();
@@ -88,18 +142,36 @@ function savePlayersToStorage() {
     localStorage.setItem('hockeyTrackerPlayers', JSON.stringify(players));
 }
 
-function addPlayer() {
+// Shot Data Management
+function loadShotsFromStorage() {
+    const saved = localStorage.getItem('hockeyTrackerShots');
+    if (saved) {
+        const data = JSON.parse(saved);
+        shots = data.shots || [];
+        shotIdCounter = data.shotIdCounter || 0;
+    }
+}
+
+function saveShotsToStorage() {
+    const data = {
+        shots: shots,
+        shotIdCounter: shotIdCounter
+    };
+    localStorage.setItem('hockeyTrackerShots', JSON.stringify(data));
+}
+
+async function addPlayer() {
     const playerName = playerNameInput.value.trim();
     if (!playerName) {
-        alert('Please enter a player name');
+        await showAlert('Error', 'Please enter a player name');
         return;
     }
     if (players.includes(playerName)) {
-        alert('Player already exists');
+        await showAlert('Error', 'Player already exists');
         return;
     }
     if (players.length >= 20) {
-        alert('Maximum 20 players allowed');
+        await showAlert('Error', 'Maximum 20 players allowed');
         return;
     }
     
@@ -115,8 +187,9 @@ function addPlayer() {
     }
 }
 
-function removePlayer(playerName) {
-    if (confirm(`Remove ${playerName} from the team?`)) {
+async function removePlayer(playerName) {
+    const confirmed = await showConfirm('Confirm Removal', `Remove ${playerName} from the team?`);
+    if (confirmed) {
         players = players.filter(p => p !== playerName);
         savePlayersToStorage();
         
@@ -212,9 +285,9 @@ function selectPlayer(playerName) {
 }
 
 // Export players to JSON
-function exportPlayers() {
+async function exportPlayers() {
     if (players.length === 0) {
-        alert('No players to export!');
+        await showAlert('Error', 'No players to export!');
         return;
     }
     
@@ -248,7 +321,7 @@ function handlePlayerFileSelect(event) {
     if (!file) return;
     
     const reader = new FileReader();
-    reader.onload = function(e) {
+    reader.onload = async function(e) {
         try {
             const data = JSON.parse(e.target.result);
             
@@ -265,17 +338,16 @@ function handlePlayerFileSelect(event) {
             }
             
             // Ask user if they want to replace or merge
-            const action = confirm(
-                `Import ${data.players.length} players.\n\n` +
-                `Click OK to ADD to existing players (${players.length} current).\n` +
-                `Click CANCEL to REPLACE all existing players.`
+            const action = await showConfirm(
+                'Import Players',
+                `Import ${data.players.length} players.\n\nClick OK to ADD to existing players (${players.length} current).\nClick CANCEL to REPLACE all existing players.`
             );
             
             if (action) {
                 // Add to existing (avoid duplicates)
                 const newPlayers = data.players.filter(p => !players.includes(p));
                 players = [...players, ...newPlayers];
-                alert(`Added ${newPlayers.length} new players! Total: ${players.length}`);
+                await showAlert('Success', `Added ${newPlayers.length} new players! Total: ${players.length}`);
             } else {
                 // Replace all
                 players = [...data.players];
@@ -284,7 +356,7 @@ function handlePlayerFileSelect(event) {
                     currentState.selectedPlayer = null;
                     currentState.team = 'against';
                 }
-                alert(`Replaced with ${players.length} players!`);
+                await showAlert('Success', `Replaced with ${players.length} players!`);
             }
             
             savePlayersToStorage();
@@ -293,7 +365,7 @@ function handlePlayerFileSelect(event) {
             updateUI();
             
         } catch (error) {
-            alert(`Import failed: ${error.message}\n\nPlease select a valid Hockey Tracker Players JSON file.`);
+            await showAlert('Import Failed', `${error.message}\n\nPlease select a valid Hockey Tracker Players JSON file.`);
         }
     };
     
@@ -304,13 +376,14 @@ function handlePlayerFileSelect(event) {
 }
 
 // Clear all players
-function clearAllPlayers() {
+async function clearAllPlayers() {
     if (players.length === 0) {
-        alert('No players to clear!');
+        await showAlert('Error', 'No players to clear!');
         return;
     }
     
-    if (confirm(`Remove all ${players.length} players from the roster?`)) {
+    const confirmed = await showConfirm('Confirm Clear All', `Remove all ${players.length} players from the roster?`);
+    if (confirmed) {
         players = [];
         currentState.selectedPlayer = null;
         currentState.team = 'against';
@@ -318,7 +391,7 @@ function clearAllPlayers() {
         renderPlayerButtons();
         renderPlayersList();
         updateUI();
-        alert('All players cleared!');
+        await showAlert('Success', 'All players cleared!');
     }
 }
 
@@ -535,6 +608,7 @@ function handleCanvasClick(event) {
     shots.push(shot);
     drawMarker(shot);
     updateCounters();
+    saveShotsToStorage();
 }
 
 // Handle canvas mousemove for tooltip
@@ -613,15 +687,16 @@ function toggleAgainst() {
 }
 
 // Undo last shot
-function undoLastShot() {
+async function undoLastShot() {
     if (shots.length === 0) {
-        alert('No shots to undo!');
+        await showAlert('Error', 'No shots to undo!');
         return;
     }
     
     shots.pop();
     drawRink();
     updateCounters();
+    saveShotsToStorage();
     // Refresh player list if on Players tab
     if (playersView.classList.contains('active')) {
         renderPlayersList();
@@ -629,17 +704,19 @@ function undoLastShot() {
 }
 
 // Reset all shots
-function resetShots() {
+async function resetShots() {
     if (shots.length === 0) {
-        alert('No shots to reset!');
+        await showAlert('Error', 'No shots to reset!');
         return;
     }
     
-    if (confirm('Are you sure you want to clear all shots?')) {
+    const confirmed = await showConfirm('Confirm Reset', 'Are you sure you want to clear all shots?');
+    if (confirmed) {
         shots = [];
         shotIdCounter = 0;
         drawRink();
         updateCounters();
+        saveShotsToStorage();
         // Refresh player list if on Players tab
         if (playersView.classList.contains('active')) {
             renderPlayersList();
@@ -648,9 +725,9 @@ function resetShots() {
 }
 
 // Export data to JSON
-function exportData() {
+async function exportData() {
     if (shots.length === 0) {
-        alert('No shots to export!');
+        await showAlert('Error', 'No shots to export!');
         return;
     }
     
@@ -684,7 +761,7 @@ function handleFileSelect(event) {
     if (!file) return;
     
     const reader = new FileReader();
-    reader.onload = function(e) {
+    reader.onload = async function(e) {
         try {
             const data = JSON.parse(e.target.result);
             
@@ -722,14 +799,15 @@ function handleFileSelect(event) {
             shotIdCounter = Math.max(...shots.map(s => s.id), 0) + 1;
             drawRink();
             updateCounters();
+            saveShotsToStorage();
             // Refresh player list if on Players tab
             if (playersView.classList.contains('active')) {
                 renderPlayersList();
             }
-            alert(`Successfully imported ${importedCount} shots! Total shots: ${shots.length}`);
+            await showAlert('Success', `Successfully imported ${importedCount} shots! Total shots: ${shots.length}`);
             
         } catch (error) {
-            alert(`Import failed: ${error.message}\n\nPlease select a valid Hockey Shot Tracker JSON file.`);
+            await showAlert('Import Failed', `${error.message}\n\nPlease select a valid Hockey Shot Tracker JSON file.`);
         }
     };
     
