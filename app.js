@@ -10,6 +10,7 @@ let shotIdCounter = 0;
 let players = []; // Array of player names
 let gameName = ''; // Current game name
 let attackDirection = 'left'; // 'right' or 'left' - default to left
+let currentPeriod = 1; // 1, 2, 3, or 'all'
 
 // Stats tracking
 let statsGameName = '';
@@ -81,6 +82,12 @@ const playersFileInput = document.getElementById('playersFileInput');
 const shotTooltip = document.getElementById('shotTooltip');
 const gameNameInput = document.getElementById('gameNameInput');
 const toggleDirectionBtn = document.getElementById('toggleDirectionBtn');
+
+// Period buttons
+const period1Btn = document.getElementById('period1Btn');
+const period2Btn = document.getElementById('period2Btn');
+const period3Btn = document.getElementById('period3Btn');
+const periodAllBtn = document.getElementById('periodAllBtn');
 
 // Stats DOM Elements
 const statsGameNameInput = document.getElementById('statsGameNameInput');
@@ -192,6 +199,7 @@ function init() {
     renderFaceoffStats();
     updateLineupDisplay(); // Initialize lineup display
     updateDirectionButton(); // Initialize direction button display
+    updatePeriodButtons(); // Initialize period button display
     drawRink();
     updateUI();
     attachEventListeners();
@@ -271,8 +279,10 @@ function loadShotsFromStorage() {
         shotIdCounter = data.shotIdCounter || 0;
         gameName = data.gameName || '';
         attackDirection = data.attackDirection || 'left';
+        currentPeriod = data.currentPeriod || 1;
         gameNameInput.value = gameName;
         updateDirectionButton();
+        updatePeriodButtons();
     }
 }
 
@@ -282,7 +292,8 @@ function saveShotsToStorage() {
         shots: shots,
         shotIdCounter: shotIdCounter,
         gameName: gameName,
-        attackDirection: attackDirection
+        attackDirection: attackDirection,
+        currentPeriod: currentPeriod
     };
     localStorage.setItem('hockeyTrackerShots', JSON.stringify(data));
 }
@@ -312,6 +323,22 @@ function updateDirectionButton() {
         arrow.textContent = '←';
         text.textContent = 'Attacking Left';
     }
+}
+
+// Period Management
+function selectPeriod(period) {
+    currentPeriod = period;
+    updatePeriodButtons();
+    drawRink();
+    updateCounters();
+    saveShotsToStorage();
+}
+
+function updatePeriodButtons() {
+    period1Btn.classList.toggle('active', currentPeriod === 1);
+    period2Btn.classList.toggle('active', currentPeriod === 2);
+    period3Btn.classList.toggle('active', currentPeriod === 3);
+    periodAllBtn.classList.toggle('active', currentPeriod === 'all');
 }
 
 async function addPlayer() {
@@ -1319,8 +1346,12 @@ function drawRink() {
     drawGoalCrease(width * 0.05, height * 0.5);
     drawGoalCrease(width * 0.95, height * 0.5);
 
-    // Redraw all shot markers
-    shots.forEach(shot => drawMarker(shot));
+    // Filter and redraw shot markers based on selected period
+    const shotsToDisplay = currentPeriod === 'all' 
+        ? shots 
+        : shots.filter(shot => shot.period === currentPeriod);
+    
+    shotsToDisplay.forEach(shot => drawMarker(shot));
 }
 
 // Draw face-off circle
@@ -1442,21 +1473,32 @@ function updateUI() {
 
 // Update shot counters
 function updateCounters() {
+    // Filter shots based on selected period
+    const periodShots = currentPeriod === 'all' 
+        ? shots 
+        : shots.filter(s => s.period === currentPeriod);
+    
     // FOR stats (includes all player shots)
-    const forShots = shots.filter(s => s.teamState === 'for' || s.teamState === 'player');
+    const forShots = periodShots.filter(s => s.teamState === 'for' || s.teamState === 'player');
     forShotsEl.textContent = forShots.length;
     forScoresEl.textContent = forShots.filter(s => s.resultState === 'score').length;
     forMissesEl.textContent = forShots.filter(s => s.resultState === 'miss').length;
     
     // AGAINST stats
-    const againstShots = shots.filter(s => s.teamState === 'against');
+    const againstShots = periodShots.filter(s => s.teamState === 'against');
     againstShotsEl.textContent = againstShots.length;
     againstScoresEl.textContent = againstShots.filter(s => s.resultState === 'score').length;
     againstMissesEl.textContent = againstShots.filter(s => s.resultState === 'miss').length;
 }
 
 // Handle canvas click
-function handleCanvasClick(event) {
+async function handleCanvasClick(event) {
+    // Check if a specific period is selected
+    if (currentPeriod === 'all') {
+        await showAlert('Error', 'Please select a specific period (1, 2, or 3) to add shots');
+        return;
+    }
+    
     const rect = canvas.getBoundingClientRect();
     const scaleX = canvas.width / rect.width;
     const scaleY = canvas.height / rect.height;
@@ -1472,6 +1514,7 @@ function handleCanvasClick(event) {
         resultState: currentState.result,
         teamState: currentState.team,
         playerName: currentState.team === 'player' ? currentState.selectedPlayer : null,
+        period: currentPeriod,
         timestamp: new Date().toISOString()
     };
     
@@ -1490,8 +1533,13 @@ function handleCanvasMouseMove(event) {
     const mouseX = (event.clientX - rect.left) * scaleX;
     const mouseY = (event.clientY - rect.top) * scaleY;
     
-    // Find shot under mouse (within 12px radius)
-    const hoveredShot = shots.find(shot => {
+    // Filter shots based on current period (only show tooltip for visible shots)
+    const visibleShots = currentPeriod === 'all' 
+        ? shots 
+        : shots.filter(shot => shot.period === currentPeriod);
+    
+    // Find shot under mouse (within 12px radius) from visible shots only
+    const hoveredShot = visibleShots.find(shot => {
         const distance = Math.sqrt(Math.pow(shot.x - mouseX, 2) + Math.pow(shot.y - mouseY, 2));
         return distance <= 12;
     });
@@ -1519,6 +1567,9 @@ function showShotTooltip(shot, clientX, clientY) {
     const resultIcon = shot.resultState === 'score' ? '⚽' : '❌';
     const resultText = shot.resultState === 'score' ? 'SCORE' : 'MISS';
     
+    // Format period
+    const periodText = shot.period ? `Period ${shot.period}` : 'Unknown Period';
+    
     // Format timestamp
     const date = new Date(shot.timestamp);
     const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -1527,7 +1578,7 @@ function showShotTooltip(shot, clientX, clientY) {
     shotTooltip.innerHTML = `
         <div>${playerInfo}</div>
         <div class="shot-result">${resultIcon} ${resultText}</div>
-        <div class="shot-time">${timeStr}</div>
+        <div class="shot-time">${periodText} • ${timeStr}</div>
     `;
     
     // Position tooltip
@@ -1608,6 +1659,7 @@ async function exportData() {
         exportDate: new Date().toISOString(),
         gameName: gameName || 'Unnamed Game',
         attackDirection: attackDirection,
+        currentPeriod: currentPeriod,
         totalShots: shots.length,
         shots: shots
     };
@@ -1668,6 +1720,11 @@ function handleFileSelect(event) {
                 // Add playerName field if missing (backward compatibility)
                 if (!shot.hasOwnProperty('playerName')) {
                     shot.playerName = null;
+                }
+                
+                // Add period field if missing (backward compatibility)
+                if (!shot.hasOwnProperty('period')) {
+                    shot.period = 1; // Default to period 1 for old data
                 }
                 
                 // Normalize old 'for' teamState to 'player' if there's no playerName
@@ -1776,6 +1833,12 @@ function attachEventListeners() {
     
     // Attack direction toggle
     toggleDirectionBtn.addEventListener('click', toggleAttackDirection);
+    
+    // Period selection
+    period1Btn.addEventListener('click', () => selectPeriod(1));
+    period2Btn.addEventListener('click', () => selectPeriod(2));
+    period3Btn.addEventListener('click', () => selectPeriod(3));
+    periodAllBtn.addEventListener('click', () => selectPeriod('all'));
     
     // Stats tab
     statsGameNameInput.addEventListener('change', saveStatsToStorage);

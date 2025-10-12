@@ -135,6 +135,39 @@ main {
     box-shadow: 0 0 8px rgba(40, 167, 69, 0.3);
 }
 
+/* Period Selection */
+.period-selection {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+    background: #f8f9fa;
+    padding: 8px;
+    border-radius: 8px;
+}
+
+.period-btn {
+    flex: 1;
+    padding: 8px 12px;
+    border: 2px solid #667eea;
+    background: white;
+    color: #667eea;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.85em;
+}
+
+.period-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.period-btn.active {
+    background: #667eea;
+    color: white;
+}
+
 /* Attack Direction Section */
 .attack-direction-section {
     display: flex;
@@ -765,6 +798,16 @@ footer {
 
     .direction-arrow {
         font-size: 1.5em;
+    }
+
+    .period-selection {
+        flex-wrap: wrap;
+    }
+
+    .period-btn {
+        flex: 1 1 45%;
+        font-size: 0.8em;
+        padding: 6px 10px;
     }
 }
 
