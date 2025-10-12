@@ -9,6 +9,7 @@ let shots = [];
 let shotIdCounter = 0;
 let players = []; // Array of player names
 let gameName = ''; // Current game name
+let attackDirection = 'left'; // 'right' or 'left' - default to left
 
 // Canvas setup
 const canvas = document.getElementById('rinkCanvas');
@@ -50,6 +51,7 @@ const clearPlayersBtn = document.getElementById('clearPlayersBtn');
 const playersFileInput = document.getElementById('playersFileInput');
 const shotTooltip = document.getElementById('shotTooltip');
 const gameNameInput = document.getElementById('gameNameInput');
+const toggleDirectionBtn = document.getElementById('toggleDirectionBtn');
 
 // Modal elements
 const customModal = document.getElementById('customModal');
@@ -110,6 +112,7 @@ function init() {
     loadShotsFromStorage();
     renderPlayerButtons();
     renderPlayersList();
+    updateDirectionButton(); // Initialize direction button display
     drawRink();
     updateUI();
     attachEventListeners();
@@ -152,7 +155,9 @@ function loadShotsFromStorage() {
         shots = data.shots || [];
         shotIdCounter = data.shotIdCounter || 0;
         gameName = data.gameName || '';
+        attackDirection = data.attackDirection || 'left';
         gameNameInput.value = gameName;
+        updateDirectionButton();
     }
 }
 
@@ -161,9 +166,37 @@ function saveShotsToStorage() {
     const data = {
         shots: shots,
         shotIdCounter: shotIdCounter,
-        gameName: gameName
+        gameName: gameName,
+        attackDirection: attackDirection
     };
     localStorage.setItem('hockeyTrackerShots', JSON.stringify(data));
+}
+
+// Attack Direction Management
+function toggleAttackDirection() {
+    attackDirection = attackDirection === 'right' ? 'left' : 'right';
+    
+    // Mirror all existing shots
+    shots.forEach(shot => {
+        shot.x = canvas.width - shot.x;
+    });
+    
+    drawRink();
+    updateDirectionButton();
+    saveShotsToStorage();
+}
+
+function updateDirectionButton() {
+    const arrow = toggleDirectionBtn.querySelector('.direction-arrow');
+    const text = toggleDirectionBtn.querySelector('.direction-text');
+    
+    if (attackDirection === 'right') {
+        arrow.textContent = '→';
+        text.textContent = 'Attacking Right';
+    } else {
+        arrow.textContent = '←';
+        text.textContent = 'Attacking Left';
+    }
 }
 
 async function addPlayer() {
@@ -432,14 +465,14 @@ function drawRink() {
     
     // Left blue line
     ctx.beginPath();
-    ctx.moveTo(width * 0.25, 0);
-    ctx.lineTo(width * 0.25, height);
+    ctx.moveTo(width * 0.33, 0);
+    ctx.lineTo(width * 0.33, height);
     ctx.stroke();
     
     // Right blue line
     ctx.beginPath();
-    ctx.moveTo(width * 0.75, 0);
-    ctx.lineTo(width * 0.75, height);
+    ctx.moveTo(width * 0.66, 0);
+    ctx.lineTo(width * 0.66, height);
     ctx.stroke();
 
     // Face-off circles
@@ -743,6 +776,7 @@ async function exportData() {
         version: '1.0',
         exportDate: new Date().toISOString(),
         gameName: gameName || 'Unnamed Game',
+        attackDirection: attackDirection,
         totalShots: shots.length,
         shots: shots
     };
@@ -814,6 +848,17 @@ function handleFileSelect(event) {
             
             // Import successful - add to existing shots instead of replacing
             const importedCount = data.shots.length;
+            
+            // If imported data has different attack direction, mirror the imported shots
+            const importedDirection = data.attackDirection || 'left';
+            const needsMirroring = importedDirection !== attackDirection;
+            
+            if (needsMirroring) {
+                data.shots.forEach(shot => {
+                    shot.x = canvas.width - shot.x;
+                });
+            }
+            
             shots = [...shots, ...data.shots];
             shotIdCounter = Math.max(...shots.map(s => s.id), 0) + 1;
             
@@ -834,6 +879,9 @@ function handleFileSelect(event) {
             let message = `Successfully imported ${importedCount} shots! Total shots: ${shots.length}`;
             if (data.gameName) {
                 message += `\n\nGame: ${data.gameName}`;
+            }
+            if (needsMirroring) {
+                message += `\n\nNote: Shots were mirrored to match current attack direction.`;
             }
             await showAlert('Success', message);
             
@@ -888,6 +936,9 @@ function attachEventListeners() {
     // Game name auto-save
     gameNameInput.addEventListener('change', saveShotsToStorage);
     gameNameInput.addEventListener('blur', saveShotsToStorage);
+    
+    // Attack direction toggle
+    toggleDirectionBtn.addEventListener('click', toggleAttackDirection);
 }
 
 // Start the app
