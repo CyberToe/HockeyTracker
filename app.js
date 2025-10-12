@@ -11,6 +11,17 @@ let players = []; // Array of player names
 let gameName = ''; // Current game name
 let attackDirection = 'left'; // 'right' or 'left' - default to left
 
+// Stats tracking
+let statsGameName = '';
+let goals = []; // Array of goal objects {id, goal, assist1, assist2, timestamp}
+let goalIdCounter = 0;
+let activeAssignmentButton = null; // Which button is active: 'goal', 'assist1', 'assist2'
+let currentAssignments = {
+    goal: null,
+    assist1: null,
+    assist2: null
+};
+
 // Canvas setup
 const canvas = document.getElementById('rinkCanvas');
 const ctx = canvas.getContext('2d');
@@ -18,8 +29,10 @@ const ctx = canvas.getContext('2d');
 // DOM Elements
 const rinkTab = document.getElementById('rinkTab');
 const playersTab = document.getElementById('playersTab');
+const statsTab = document.getElementById('statsTab');
 const rinkView = document.getElementById('rinkView');
 const playersView = document.getElementById('playersView');
+const statsView = document.getElementById('statsView');
 
 const scoreBtn = document.getElementById('scoreBtn');
 const missBtn = document.getElementById('missBtn');
@@ -52,6 +65,22 @@ const playersFileInput = document.getElementById('playersFileInput');
 const shotTooltip = document.getElementById('shotTooltip');
 const gameNameInput = document.getElementById('gameNameInput');
 const toggleDirectionBtn = document.getElementById('toggleDirectionBtn');
+
+// Stats DOM Elements
+const statsGameNameInput = document.getElementById('statsGameNameInput');
+const exportStatsBtn = document.getElementById('exportStatsBtn');
+const importStatsBtn = document.getElementById('importStatsBtn');
+const statsFileInput = document.getElementById('statsFileInput');
+const statsPlayersList = document.getElementById('statsPlayersList');
+const goalBtn = document.getElementById('goalBtn');
+const assist1Btn = document.getElementById('assist1Btn');
+const assist2Btn = document.getElementById('assist2Btn');
+const goalPlayerName = document.getElementById('goalPlayerName');
+const assist1PlayerName = document.getElementById('assist1PlayerName');
+const assist2PlayerName = document.getElementById('assist2PlayerName');
+const submitGoalBtn = document.getElementById('submitGoalBtn');
+const clearAssignmentsBtn = document.getElementById('clearAssignmentsBtn');
+const goalsList = document.getElementById('goalsList');
 
 // Modal elements
 const customModal = document.getElementById('customModal');
@@ -110,8 +139,11 @@ function showConfirm(title, message) {
 function init() {
     loadPlayersFromStorage();
     loadShotsFromStorage();
+    loadStatsFromStorage();
     renderPlayerButtons();
     renderPlayersList();
+    renderStatsPlayersList();
+    renderGoalsList();
     updateDirectionButton(); // Initialize direction button display
     drawRink();
     updateUI();
@@ -120,18 +152,29 @@ function init() {
 
 // Tab Switching
 function switchTab(tabName) {
+    // Remove all active classes
+    rinkTab.classList.remove('active');
+    playersTab.classList.remove('active');
+    statsTab.classList.remove('active');
+    rinkView.classList.remove('active');
+    playersView.classList.remove('active');
+    statsView.classList.remove('active');
+    
+    // Add active class to selected tab
     if (tabName === 'rink') {
         rinkTab.classList.add('active');
-        playersTab.classList.remove('active');
         rinkView.classList.add('active');
-        playersView.classList.remove('active');
     } else if (tabName === 'players') {
-        rinkTab.classList.remove('active');
         playersTab.classList.add('active');
-        rinkView.classList.remove('active');
         playersView.classList.add('active');
         // Refresh player stats when viewing the Players tab
         renderPlayersList();
+    } else if (tabName === 'stats') {
+        statsTab.classList.add('active');
+        statsView.classList.add('active');
+        // Refresh stats player list and sync game name
+        renderStatsPlayersList();
+        syncStatsGameName();
     }
 }
 
@@ -343,7 +386,7 @@ async function exportPlayers() {
     
     const link = document.createElement('a');
     link.href = url;
-    link.download = `hockey-players-${Date.now()}.json`;
+    link.download = `hockey-tracker-players-${Date.now()}.json`;
     link.click();
     
     URL.revokeObjectURL(url);
@@ -432,6 +475,299 @@ async function clearAllPlayers() {
         updateUI();
         await showAlert('Success', 'All players cleared!');
     }
+}
+
+// Stats Management Functions
+function loadStatsFromStorage() {
+    const saved = localStorage.getItem('hockeyTrackerStats');
+    if (saved) {
+        const data = JSON.parse(saved);
+        goals = data.goals || [];
+        goalIdCounter = data.goalIdCounter || 0;
+        statsGameName = data.statsGameName || '';
+        statsGameNameInput.value = statsGameName;
+    }
+}
+
+function saveStatsToStorage() {
+    statsGameName = statsGameNameInput.value.trim();
+    const data = {
+        goals: goals,
+        goalIdCounter: goalIdCounter,
+        statsGameName: statsGameName
+    };
+    localStorage.setItem('hockeyTrackerStats', JSON.stringify(data));
+}
+
+function syncStatsGameName() {
+    // Sync game name from Rink tab if Stats game name is empty
+    if (!statsGameNameInput.value.trim() && gameNameInput.value.trim()) {
+        statsGameNameInput.value = gameNameInput.value.trim();
+        statsGameName = statsGameNameInput.value;
+        saveStatsToStorage();
+    }
+}
+
+function renderStatsPlayersList() {
+    if (players.length === 0) {
+        statsPlayersList.innerHTML = '<p class="no-players">No players available. Add players in the Players tab.</p>';
+        return;
+    }
+    
+    statsPlayersList.innerHTML = '';
+    players.forEach(playerName => {
+        const btn = document.createElement('button');
+        btn.className = 'stats-player-btn';
+        btn.textContent = playerName;
+        btn.dataset.player = playerName;
+        btn.addEventListener('click', () => assignPlayerToActive(playerName));
+        statsPlayersList.appendChild(btn);
+    });
+}
+
+function activateAssignmentButton(buttonType) {
+    // Deactivate all buttons first
+    goalBtn.classList.remove('active');
+    assist1Btn.classList.remove('active');
+    assist2Btn.classList.remove('active');
+    
+    // Set active button
+    activeAssignmentButton = buttonType;
+    
+    if (buttonType === 'goal') {
+        goalBtn.classList.add('active');
+    } else if (buttonType === 'assist1') {
+        assist1Btn.classList.add('active');
+    } else if (buttonType === 'assist2') {
+        assist2Btn.classList.add('active');
+    }
+}
+
+function assignPlayerToActive(playerName) {
+    if (!activeAssignmentButton) {
+        showAlert('Error', 'Please select Goal or Assist button first');
+        return;
+    }
+    
+    currentAssignments[activeAssignmentButton] = playerName;
+    updateAssignmentDisplay();
+}
+
+function updateAssignmentDisplay() {
+    // Update goal display
+    if (currentAssignments.goal) {
+        goalPlayerName.textContent = currentAssignments.goal;
+        goalBtn.classList.add('assigned');
+    } else {
+        goalPlayerName.textContent = 'Click to assign';
+        goalBtn.classList.remove('assigned');
+    }
+    
+    // Update assist 1 display
+    if (currentAssignments.assist1) {
+        assist1PlayerName.textContent = currentAssignments.assist1;
+        assist1Btn.classList.add('assigned');
+    } else {
+        assist1PlayerName.textContent = 'Click to assign';
+        assist1Btn.classList.remove('assigned');
+    }
+    
+    // Update assist 2 display
+    if (currentAssignments.assist2) {
+        assist2PlayerName.textContent = currentAssignments.assist2;
+        assist2Btn.classList.add('assigned');
+    } else {
+        assist2PlayerName.textContent = 'Click to assign';
+        assist2Btn.classList.remove('assigned');
+    }
+}
+
+async function submitGoal() {
+    if (!currentAssignments.goal) {
+        await showAlert('Error', 'Please assign a goal scorer');
+        return;
+    }
+    
+    const goal = {
+        id: goalIdCounter++,
+        goal: currentAssignments.goal,
+        assist1: currentAssignments.assist1,
+        assist2: currentAssignments.assist2,
+        timestamp: new Date().toISOString()
+    };
+    
+    goals.push(goal);
+    saveStatsToStorage();
+    renderGoalsList();
+    
+    // Clear assignments after submit
+    clearAssignments();
+}
+
+function clearAssignments() {
+    currentAssignments = {
+        goal: null,
+        assist1: null,
+        assist2: null
+    };
+    activeAssignmentButton = null;
+    
+    goalBtn.classList.remove('active');
+    assist1Btn.classList.remove('active');
+    assist2Btn.classList.remove('active');
+    
+    updateAssignmentDisplay();
+}
+
+function renderGoalsList() {
+    if (goals.length === 0) {
+        goalsList.innerHTML = '<p class="no-goals">No goals recorded yet.</p>';
+        return;
+    }
+    
+    goalsList.innerHTML = '';
+    goals.forEach((goal, index) => {
+        const item = document.createElement('div');
+        item.className = 'goal-item';
+        
+        const info = document.createElement('div');
+        info.className = 'goal-info';
+        
+        const scorer = document.createElement('div');
+        scorer.className = 'goal-scorer';
+        scorer.textContent = `⚽ ${goal.goal}`;
+        
+        const assists = document.createElement('div');
+        assists.className = 'goal-assists';
+        let assistsText = '';
+        if (goal.assist1) {
+            assistsText += `<strong>${goal.assist1}</strong>`;
+        }
+        if (goal.assist2) {
+            if (assistsText) assistsText += ', ';
+            assistsText += `<strong>${goal.assist2}</strong>`;
+        }
+        if (assistsText) {
+            assists.innerHTML = `Assists: ${assistsText}`;
+        } else {
+            assists.textContent = 'Unassisted';
+        }
+        
+        info.appendChild(scorer);
+        info.appendChild(assists);
+        
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'delete-goal-btn';
+        deleteBtn.textContent = 'Delete';
+        deleteBtn.addEventListener('click', () => deleteGoal(goal.id));
+        
+        item.appendChild(info);
+        item.appendChild(deleteBtn);
+        goalsList.appendChild(item);
+    });
+}
+
+async function deleteGoal(goalId) {
+    const confirmed = await showConfirm('Confirm Delete', 'Delete this goal?');
+    if (confirmed) {
+        goals = goals.filter(g => g.id !== goalId);
+        saveStatsToStorage();
+        renderGoalsList();
+    }
+}
+
+// Export stats to JSON
+async function exportStats() {
+    if (goals.length === 0) {
+        await showAlert('Error', 'No stats to export!');
+        return;
+    }
+    
+    statsGameName = statsGameNameInput.value.trim();
+    
+    const exportData = {
+        version: '1.0',
+        exportDate: new Date().toISOString(),
+        gameName: statsGameName || 'Unnamed Game',
+        totalGoals: goals.length,
+        goals: goals
+    };
+    
+    const dataStr = JSON.stringify(exportData, null, 2);
+    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(dataBlob);
+    
+    const link = document.createElement('a');
+    link.href = url;
+    
+    // Create filename with game name if available
+    let filename = 'hockey-tracker-stats';
+    if (statsGameName) {
+        const sanitizedName = statsGameName.replace(/[^a-z0-9]/gi, '-').toLowerCase();
+        filename = `hockey-tracker-stats-${sanitizedName}`;
+    }
+    filename += `-${Date.now()}.json`;
+    
+    link.download = filename;
+    link.click();
+    
+    URL.revokeObjectURL(url);
+}
+
+// Import stats from JSON
+function importStats() {
+    statsFileInput.click();
+}
+
+// Handle stats file selection
+function handleStatsFileSelect(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = async function(e) {
+        try {
+            const data = JSON.parse(e.target.result);
+            
+            // Validate data structure
+            if (!data.goals || !Array.isArray(data.goals)) {
+                throw new Error('Invalid data format: missing or invalid goals array');
+            }
+            
+            // Ask user if they want to replace or merge
+            const action = await showConfirm(
+                'Import Stats',
+                `Import ${data.goals.length} goals.\n\nClick OK to ADD to existing goals (${goals.length} current).\nClick CANCEL to REPLACE all existing goals.`
+            );
+            
+            if (action) {
+                // Add to existing
+                goals = [...goals, ...data.goals];
+                await showAlert('Success', `Added ${data.goals.length} goals! Total: ${goals.length}`);
+            } else {
+                // Replace all
+                goals = [...data.goals];
+                await showAlert('Success', `Replaced with ${data.goals.length} goals!`);
+            }
+            
+            goalIdCounter = Math.max(...goals.map(g => g.id), 0) + 1;
+            
+            // Import game name if current is empty
+            if (data.gameName && !statsGameNameInput.value.trim()) {
+                statsGameName = data.gameName;
+                statsGameNameInput.value = statsGameName;
+            }
+            
+            saveStatsToStorage();
+            renderGoalsList();
+            
+        } catch (error) {
+            await showAlert('Import Failed', `${error.message}\n\nPlease select a valid Hockey Tracker Stats JSON file.`);
+        }
+    };
+    
+    reader.readAsText(file);
+    statsFileInput.value = '';
 }
 
 // Draw Hockey Rink
@@ -789,11 +1125,11 @@ async function exportData() {
     link.href = url;
     
     // Create filename with game name if available
-    let filename = 'hockey-tracker';
+    let filename = 'hockey-tracker-shots';
     if (gameName) {
         // Sanitize game name for filename (remove special characters)
         const sanitizedName = gameName.replace(/[^a-z0-9]/gi, '-').toLowerCase();
-        filename = `hockey-tracker-${sanitizedName}`;
+        filename = `hockey-tracker-shots-${sanitizedName}`;
     }
     filename += `-${Date.now()}.json`;
     
@@ -901,6 +1237,7 @@ function attachEventListeners() {
     // Tab switching
     rinkTab.addEventListener('click', () => switchTab('rink'));
     playersTab.addEventListener('click', () => switchTab('players'));
+    statsTab.addEventListener('click', () => switchTab('stats'));
     
     // Canvas
     canvas.addEventListener('click', handleCanvasClick);
@@ -939,6 +1276,18 @@ function attachEventListeners() {
     
     // Attack direction toggle
     toggleDirectionBtn.addEventListener('click', toggleAttackDirection);
+    
+    // Stats tab
+    statsGameNameInput.addEventListener('change', saveStatsToStorage);
+    statsGameNameInput.addEventListener('blur', saveStatsToStorage);
+    goalBtn.addEventListener('click', () => activateAssignmentButton('goal'));
+    assist1Btn.addEventListener('click', () => activateAssignmentButton('assist1'));
+    assist2Btn.addEventListener('click', () => activateAssignmentButton('assist2'));
+    submitGoalBtn.addEventListener('click', submitGoal);
+    clearAssignmentsBtn.addEventListener('click', clearAssignments);
+    exportStatsBtn.addEventListener('click', exportStats);
+    importStatsBtn.addEventListener('click', importStats);
+    statsFileInput.addEventListener('change', handleStatsFileSelect);
 }
 
 // Start the app

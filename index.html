@@ -18,6 +18,7 @@
             <div class="tab-navigation">
                 <button id="playersTab" class="tab-btn active">Players</button>
                 <button id="rinkTab" class="tab-btn">Rink</button>
+                <button id="statsTab" class="tab-btn">Stats</button>
             </div>
 
             <!-- Players View -->
@@ -169,6 +170,73 @@
             </div>
             <!-- End Rink View -->
 
+            <!-- Stats View -->
+            <div id="statsView" class="tab-content">
+                <div class="stats-management">
+                    <h2>Game Statistics</h2>
+                    
+                    <!-- Game Name Section -->
+                    <div class="stats-game-name-section">
+                        <label for="statsGameNameInput">Game Name:</label>
+                        <input type="text" id="statsGameNameInput" placeholder="Enter game name (e.g., vs Maple Leafs)" maxlength="50">
+                    </div>
+
+                    <!-- Stats Actions -->
+                    <div class="stats-actions">
+                        <button id="exportStatsBtn" class="action-btn export-btn">Export Stats</button>
+                        <button id="importStatsBtn" class="action-btn import-btn">Import Stats</button>
+                    </div>
+
+                    <!-- Player Selection List -->
+                    <div class="stats-players-section">
+                        <h3>Select Players:</h3>
+                        <div id="statsPlayersList" class="stats-players-list">
+                            <p class="no-players">No players available. Add players in the Players tab.</p>
+                        </div>
+                    </div>
+
+                    <!-- Goal & Assists Assignment -->
+                    <div class="goal-assists-section">
+                        <h3>Record Goal & Assists</h3>
+                        
+                        <div class="assignment-buttons">
+                            <div class="assignment-slot">
+                                <button id="goalBtn" class="assignment-btn goal-btn">
+                                    <span class="btn-label">Goal</span>
+                                    <span id="goalPlayerName" class="assigned-player">Click to assign</span>
+                                </button>
+                            </div>
+                            <div class="assignment-slot">
+                                <button id="assist1Btn" class="assignment-btn assist-btn">
+                                    <span class="btn-label">Assist 1</span>
+                                    <span id="assist1PlayerName" class="assigned-player">Click to assign</span>
+                                </button>
+                            </div>
+                            <div class="assignment-slot">
+                                <button id="assist2Btn" class="assignment-btn assist-btn">
+                                    <span class="btn-label">Assist 2</span>
+                                    <span id="assist2PlayerName" class="assigned-player">Click to assign</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="submit-clear-buttons">
+                            <button id="submitGoalBtn" class="action-btn export-btn">Submit</button>
+                            <button id="clearAssignmentsBtn" class="action-btn reset-btn">Clear</button>
+                        </div>
+                    </div>
+
+                    <!-- Goals List -->
+                    <div class="goals-list-section">
+                        <h3>Goals Recorded:</h3>
+                        <div id="goalsList" class="goals-list">
+                            <p class="no-goals">No goals recorded yet.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Stats View -->
+
         </main>
 
         <footer>
@@ -179,6 +247,7 @@
     <!-- Hidden File Inputs -->
     <input type="file" id="fileInput" accept=".json" style="display: none;">
     <input type="file" id="playersFileInput" accept=".json" style="display: none;">
+    <input type="file" id="statsFileInput" accept=".json" style="display: none;">
 
     <!-- Custom Modal Dialog -->
     <div id="customModal" class="custom-modal">
