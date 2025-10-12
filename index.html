@@ -175,31 +175,35 @@
                 <div class="stats-management">
                     
                     
-                    <!-- Sticky Top Section -->
-                    <div class="stats-sticky-header">
-                        <!-- Game Name Section -->
-                        <div class="stats-game-name-section">
-                            <label for="statsGameNameInput">Game Name:</label>
-                            <input type="text" id="statsGameNameInput" placeholder="Enter game name (e.g., vs Maple Leafs)" maxlength="50">
-                        </div>
+                    <!-- Game Name Section -->
+                    <div class="stats-game-name-section">
+                        <label for="statsGameNameInput">Game Name:</label>
+                        <input type="text" id="statsGameNameInput" placeholder="Enter game name (e.g., vs Maple Leafs)" maxlength="50">
+                    </div>
 
-                        <!-- Stats Actions -->
-                        <div class="stats-actions">
-                            <button id="exportStatsBtn" class="action-btn export-btn">Export Stats</button>
-                            <button id="importStatsBtn" class="action-btn import-btn">Import Stats</button>
-                        </div>
+                    <!-- Stats Actions -->
+                    <div class="stats-actions">
+                        <button id="exportStatsBtn" class="action-btn export-btn">Export Stats</button>
+                        <button id="importStatsBtn" class="action-btn import-btn">Import Stats</button>
+                    </div>
 
-                        <!-- Player Selection List -->
-                        <div class="stats-players-section">
-                            <h3>Select Players:</h3>
-                            <div id="statsPlayersList" class="stats-players-list">
-                                <p class="no-players">No players available. Add players in the Players tab.</p>
-                            </div>
+                    <!-- Player Selection List -->
+                    <div class="stats-players-section">
+                        <h3>Select Players:</h3>
+                        <div id="statsPlayersList" class="stats-players-list">
+                            <p class="no-players">No players available. Add players in the Players tab.</p>
                         </div>
                     </div>
 
-                    <!-- Scrollable Content Section -->
-                    <div class="stats-scrollable-content">
+                    <!-- Stats Sub-Tabs -->
+                    <div class="stats-subtab-navigation">
+                        <button id="goalsAssistsSubTab" class="stats-subtab-btn active">Goals & Assists</button>
+                        <button id="lineupSubTab" class="stats-subtab-btn">Lineup +/-</button>
+                        <button id="faceoffsSubTab" class="stats-subtab-btn">Faceoffs</button>
+                    </div>
+
+                    <!-- Goals & Assists Sub-View -->
+                    <div id="goalsAssistsSubView" class="stats-subcontent active">
                     <!-- Goal & Assists Assignment -->
                     <div class="goal-assists-section">
                         <h3>Record Goal & Assists</h3>
@@ -238,7 +242,11 @@
                             <p class="no-goals">No goals recorded yet.</p>
                         </div>
                     </div>
+                    </div>
+                    <!-- End Goals & Assists Sub-View -->
 
+                    <!-- Lineup +/- Sub-View -->
+                    <div id="lineupSubView" class="stats-subcontent">
                     <!-- Lineup +/- Section -->
                     <div class="lineup-section">
                         <h3>Lineup +/-</h3>
@@ -292,7 +300,11 @@
                             <p class="no-events">No +/- events recorded yet.</p>
                         </div>
                     </div>
+                    </div>
+                    <!-- End Lineup +/- Sub-View -->
 
+                    <!-- Faceoffs Sub-View -->
+                    <div id="faceoffsSubView" class="stats-subcontent">
                     <!-- Faceoffs Section -->
                     <div class="faceoffs-section">
                         <h3>Faceoffs Tracking</h3>
@@ -312,7 +324,7 @@
                         </div>
                     </div>
                     </div>
-                    <!-- End Scrollable Content -->
+                    <!-- End Faceoffs Sub-View -->
                 </div>
             </div>
             <!-- End Stats View -->

@@ -950,18 +950,6 @@ footer {
     background: #f8f9fa;
     padding: 15px;
     border-radius: 8px;
-    display: flex;
-    flex-direction: column;
-    max-height: calc(100vh - 160px);
-    overflow: hidden;
-}
-
-.stats-management h2 {
-    color: #667eea;
-    font-size: 1.3em;
-    margin-bottom: 15px;
-    text-align: center;
-    flex-shrink: 0;
 }
 
 .stats-management h3 {
@@ -970,38 +958,44 @@ footer {
     margin-bottom: 12px;
 }
 
-/* Stats Sticky Header */
-.stats-sticky-header {
-    flex-shrink: 0;
-    background: #f8f9fa;
-    padding-bottom: 10px;
-    border-bottom: 2px solid #e0e0e0;
+/* Stats Sub-Tabs */
+.stats-subtab-navigation {
+    display: flex;
+    gap: 8px;
     margin-bottom: 15px;
+    margin-top: 15px;
 }
 
-/* Stats Scrollable Content */
-.stats-scrollable-content {
+.stats-subtab-btn {
     flex: 1;
-    overflow-y: auto;
-    padding-right: 5px;
+    padding: 10px 15px;
+    border: 2px solid #667eea;
+    background: white;
+    color: #667eea;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.85em;
 }
 
-.stats-scrollable-content::-webkit-scrollbar {
-    width: 8px;
+.stats-subtab-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 }
 
-.stats-scrollable-content::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 4px;
-}
-
-.stats-scrollable-content::-webkit-scrollbar-thumb {
+.stats-subtab-btn.active {
     background: #667eea;
-    border-radius: 4px;
+    color: white;
 }
 
-.stats-scrollable-content::-webkit-scrollbar-thumb:hover {
-    background: #5568d3;
+/* Stats Sub-Content */
+.stats-subcontent {
+    display: none;
+}
+
+.stats-subcontent.active {
+    display: block;
 }
 
 .stats-game-name-section {
@@ -1612,10 +1606,6 @@ footer {
 
 /* Responsive Stats */
 @media (max-width: 768px) {
-    .stats-management {
-        max-height: calc(100vh - 140px);
-    }
-
     .stats-game-name-section {
         flex-direction: column;
         align-items: flex-start;
@@ -1627,6 +1617,15 @@ footer {
 
     .stats-actions {
         flex-direction: column;
+    }
+
+    .stats-subtab-navigation {
+        flex-direction: column;
+    }
+
+    .stats-subtab-btn {
+        padding: 8px 12px;
+        font-size: 0.8em;
     }
 
     .assignment-buttons {

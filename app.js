@@ -88,6 +88,15 @@ const exportStatsBtn = document.getElementById('exportStatsBtn');
 const importStatsBtn = document.getElementById('importStatsBtn');
 const statsFileInput = document.getElementById('statsFileInput');
 const statsPlayersList = document.getElementById('statsPlayersList');
+
+// Stats Sub-Tabs
+const goalsAssistsSubTab = document.getElementById('goalsAssistsSubTab');
+const lineupSubTab = document.getElementById('lineupSubTab');
+const faceoffsSubTab = document.getElementById('faceoffsSubTab');
+const goalsAssistsSubView = document.getElementById('goalsAssistsSubView');
+const lineupSubView = document.getElementById('lineupSubView');
+const faceoffsSubView = document.getElementById('faceoffsSubView');
+
 const goalBtn = document.getElementById('goalBtn');
 const assist1Btn = document.getElementById('assist1Btn');
 const assist2Btn = document.getElementById('assist2Btn');
@@ -213,6 +222,31 @@ function switchTab(tabName) {
         // Refresh stats player list and sync game name
         renderStatsPlayersList();
         syncStatsGameName();
+        // Default to Goals & Assists sub-tab
+        switchStatsSubTab('goalsAssists');
+    }
+}
+
+// Stats Sub-Tab Switching
+function switchStatsSubTab(subTabName) {
+    // Remove all active classes
+    goalsAssistsSubTab.classList.remove('active');
+    lineupSubTab.classList.remove('active');
+    faceoffsSubTab.classList.remove('active');
+    goalsAssistsSubView.classList.remove('active');
+    lineupSubView.classList.remove('active');
+    faceoffsSubView.classList.remove('active');
+    
+    // Add active class to selected sub-tab
+    if (subTabName === 'goalsAssists') {
+        goalsAssistsSubTab.classList.add('active');
+        goalsAssistsSubView.classList.add('active');
+    } else if (subTabName === 'lineup') {
+        lineupSubTab.classList.add('active');
+        lineupSubView.classList.add('active');
+    } else if (subTabName === 'faceoffs') {
+        faceoffsSubTab.classList.add('active');
+        faceoffsSubView.classList.add('active');
     }
 }
 
@@ -1699,6 +1733,11 @@ function attachEventListeners() {
     rinkTab.addEventListener('click', () => switchTab('rink'));
     playersTab.addEventListener('click', () => switchTab('players'));
     statsTab.addEventListener('click', () => switchTab('stats'));
+    
+    // Stats sub-tab switching
+    goalsAssistsSubTab.addEventListener('click', () => switchStatsSubTab('goalsAssists'));
+    lineupSubTab.addEventListener('click', () => switchStatsSubTab('lineup'));
+    faceoffsSubTab.addEventListener('click', () => switchStatsSubTab('faceoffs'));
     
     // Canvas
     canvas.addEventListener('click', handleCanvasClick);
