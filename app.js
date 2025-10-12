@@ -22,6 +22,22 @@ let currentAssignments = {
     assist2: null
 };
 
+// Lineup +/- tracking
+let plusMinusEvents = []; // Array of +/- events
+let plusMinusIdCounter = 0;
+let activePositionButton = null; // Which position button is active
+let currentLineup = {
+    leftWing: null,
+    center: null,
+    rightWing: null,
+    leftDefence: null,
+    rightDefence: null
+};
+
+// Faceoffs tracking
+let faceoffStats = []; // Array of {playerName, taken, won}
+let activeFaceoffAddButton = false; // Whether "Add Player" button is active
+
 // Canvas setup
 const canvas = document.getElementById('rinkCanvas');
 const ctx = canvas.getContext('2d');
@@ -81,6 +97,25 @@ const assist2PlayerName = document.getElementById('assist2PlayerName');
 const submitGoalBtn = document.getElementById('submitGoalBtn');
 const clearAssignmentsBtn = document.getElementById('clearAssignmentsBtn');
 const goalsList = document.getElementById('goalsList');
+
+// Lineup +/- DOM Elements
+const leftWingBtn = document.getElementById('leftWingBtn');
+const centerBtn = document.getElementById('centerBtn');
+const rightWingBtn = document.getElementById('rightWingBtn');
+const leftDefenceBtn = document.getElementById('leftDefenceBtn');
+const rightDefenceBtn = document.getElementById('rightDefenceBtn');
+const leftWingPlayerName = document.getElementById('leftWingPlayerName');
+const centerPlayerName = document.getElementById('centerPlayerName');
+const rightWingPlayerName = document.getElementById('rightWingPlayerName');
+const leftDefencePlayerName = document.getElementById('leftDefencePlayerName');
+const rightDefencePlayerName = document.getElementById('rightDefencePlayerName');
+const plusBtn = document.getElementById('plusBtn');
+const minusBtn = document.getElementById('minusBtn');
+const clearLineupBtn = document.getElementById('clearLineupBtn');
+const plusMinusList = document.getElementById('plusMinusList');
+
+// Faceoffs DOM Elements
+const faceoffPlayersList = document.getElementById('faceoffPlayersList');
 
 // Modal elements
 const customModal = document.getElementById('customModal');
@@ -144,6 +179,9 @@ function init() {
     renderPlayersList();
     renderStatsPlayersList();
     renderGoalsList();
+    renderPlusMinusList();
+    renderFaceoffStats();
+    updateLineupDisplay(); // Initialize lineup display
     updateDirectionButton(); // Initialize direction button display
     drawRink();
     updateUI();
@@ -281,8 +319,13 @@ async function removePlayer(playerName) {
             currentState.team = 'against';
         }
         
+        // Remove from faceoff stats if present
+        faceoffStats = faceoffStats.filter(fs => fs.playerName !== playerName);
+        saveStatsToStorage();
+        
         renderPlayerButtons();
         renderPlayersList();
+        renderFaceoffStats();
         updateUI();
     }
 }
@@ -318,12 +361,37 @@ function renderPlayersList() {
     
     playersListEl.innerHTML = '';
     players.forEach(playerName => {
-        // Calculate player stats
+        // Calculate shot stats
         const playerShots = shots.filter(s => s.playerName === playerName);
         const totalShots = playerShots.length;
         const scores = playerShots.filter(s => s.resultState === 'score').length;
         const misses = playerShots.filter(s => s.resultState === 'miss').length;
         const percentage = totalShots > 0 ? ((scores / totalShots) * 100).toFixed(1) : '0.0';
+        
+        // Calculate assists
+        const assists = goals.filter(g => g.assist1 === playerName || g.assist2 === playerName).length;
+        
+        // Calculate +/-
+        let plusCount = 0;
+        let minusCount = 0;
+        plusMinusEvents.forEach(event => {
+            const isOnIce = Object.values(event.lineup).includes(playerName);
+            if (isOnIce) {
+                if (event.type === 'plus') {
+                    plusCount++;
+                } else {
+                    minusCount++;
+                }
+            }
+        });
+        const plusMinus = plusCount - minusCount;
+        const plusMinusDisplay = plusMinus > 0 ? `+${plusMinus}` : plusMinus.toString();
+        
+        // Get faceoff stats
+        const faceoffData = faceoffStats.find(fs => fs.playerName === playerName);
+        const faceoffsTaken = faceoffData ? faceoffData.taken : 0;
+        const faceoffsWon = faceoffData ? faceoffData.won : 0;
+        const faceoffPercentage = faceoffsTaken > 0 ? ((faceoffsWon / faceoffsTaken) * 100).toFixed(1) : '0.0';
         
         const item = document.createElement('div');
         item.className = 'player-item';
@@ -340,9 +408,14 @@ function renderPlayersList() {
         statsDiv.className = 'player-stats';
         statsDiv.innerHTML = `
             <span class="stat-detail"><strong>Shots:</strong> ${totalShots}</span>
-            <span class="stat-detail"><strong>Scores:</strong> ${scores}</span>
+            <span class="stat-detail"><strong>Goals:</strong> ${scores}</span>
+            <span class="stat-detail"><strong>Assists:</strong> ${assists}</span>
             <span class="stat-detail"><strong>Misses:</strong> ${misses}</span>
-            <span class="stat-detail percentage"><strong>Percentage:</strong> ${percentage}%</span>
+            <span class="stat-detail percentage"><strong>Shot %:</strong> ${percentage}%</span>
+            <span class="stat-detail plusminus-stat"><strong>+/-:</strong> ${plusMinusDisplay}</span>
+            <span class="stat-detail"><strong>FO Taken:</strong> ${faceoffsTaken}</span>
+            <span class="stat-detail"><strong>FO Won:</strong> ${faceoffsWon}</span>
+            <span class="stat-detail percentage"><strong>FO %:</strong> ${faceoffPercentage}%</span>
         `;
         
         infoDiv.appendChild(nameSpan);
@@ -484,6 +557,9 @@ function loadStatsFromStorage() {
         const data = JSON.parse(saved);
         goals = data.goals || [];
         goalIdCounter = data.goalIdCounter || 0;
+        plusMinusEvents = data.plusMinusEvents || [];
+        plusMinusIdCounter = data.plusMinusIdCounter || 0;
+        faceoffStats = data.faceoffStats || [];
         statsGameName = data.statsGameName || '';
         statsGameNameInput.value = statsGameName;
     }
@@ -494,6 +570,9 @@ function saveStatsToStorage() {
     const data = {
         goals: goals,
         goalIdCounter: goalIdCounter,
+        plusMinusEvents: plusMinusEvents,
+        plusMinusIdCounter: plusMinusIdCounter,
+        faceoffStats: faceoffStats,
         statsGameName: statsGameName
     };
     localStorage.setItem('hockeyTrackerStats', JSON.stringify(data));
@@ -520,16 +599,24 @@ function renderStatsPlayersList() {
         btn.className = 'stats-player-btn';
         btn.textContent = playerName;
         btn.dataset.player = playerName;
-        btn.addEventListener('click', () => assignPlayerToActive(playerName));
+        btn.addEventListener('click', () => assignPlayerToPosition(playerName));
         statsPlayersList.appendChild(btn);
     });
 }
 
 function activateAssignmentButton(buttonType) {
-    // Deactivate all buttons first
+    // Deactivate all goal/assist buttons first
     goalBtn.classList.remove('active');
     assist1Btn.classList.remove('active');
     assist2Btn.classList.remove('active');
+    
+    // Deactivate position buttons when goal/assist is selected
+    leftWingBtn.classList.remove('active');
+    centerBtn.classList.remove('active');
+    rightWingBtn.classList.remove('active');
+    leftDefenceBtn.classList.remove('active');
+    rightDefenceBtn.classList.remove('active');
+    activePositionButton = null;
     
     // Set active button
     activeAssignmentButton = buttonType;
@@ -541,16 +628,6 @@ function activateAssignmentButton(buttonType) {
     } else if (buttonType === 'assist2') {
         assist2Btn.classList.add('active');
     }
-}
-
-function assignPlayerToActive(playerName) {
-    if (!activeAssignmentButton) {
-        showAlert('Error', 'Please select Goal or Assist button first');
-        return;
-    }
-    
-    currentAssignments[activeAssignmentButton] = playerName;
-    updateAssignmentDisplay();
 }
 
 function updateAssignmentDisplay() {
@@ -599,6 +676,11 @@ async function submitGoal() {
     goals.push(goal);
     saveStatsToStorage();
     renderGoalsList();
+    
+    // Update player stats if on Players tab
+    if (playersView.classList.contains('active')) {
+        renderPlayersList();
+    }
     
     // Clear assignments after submit
     clearAssignments();
@@ -673,12 +755,360 @@ async function deleteGoal(goalId) {
         goals = goals.filter(g => g.id !== goalId);
         saveStatsToStorage();
         renderGoalsList();
+        
+        // Update player stats if on Players tab
+        if (playersView.classList.contains('active')) {
+            renderPlayersList();
+        }
+    }
+}
+
+// Lineup +/- Functions
+function activatePositionButton(position) {
+    // Deactivate all position buttons
+    leftWingBtn.classList.remove('active');
+    centerBtn.classList.remove('active');
+    rightWingBtn.classList.remove('active');
+    leftDefenceBtn.classList.remove('active');
+    rightDefenceBtn.classList.remove('active');
+    
+    // Deactivate goal/assist buttons when position is selected
+    goalBtn.classList.remove('active');
+    assist1Btn.classList.remove('active');
+    assist2Btn.classList.remove('active');
+    activeAssignmentButton = null;
+    
+    // Set active position
+    activePositionButton = position;
+    
+    const buttonMap = {
+        leftWing: leftWingBtn,
+        center: centerBtn,
+        rightWing: rightWingBtn,
+        leftDefence: leftDefenceBtn,
+        rightDefence: rightDefenceBtn
+    };
+    
+    if (buttonMap[position]) {
+        buttonMap[position].classList.add('active');
+    }
+}
+
+function assignPlayerToPosition(playerName) {
+    // Check if we should add to faceoff tracking
+    if (activeFaceoffAddButton) {
+        addPlayerToFaceoffs(playerName);
+        return;
+    }
+    
+    // Check if we should assign to position or to goal/assist
+    if (activePositionButton) {
+        currentLineup[activePositionButton] = playerName;
+        updateLineupDisplay();
+    } else if (activeAssignmentButton) {
+        currentAssignments[activeAssignmentButton] = playerName;
+        updateAssignmentDisplay();
+    } else {
+        showAlert('Error', 'Please select a position, goal, or assist button first');
+    }
+}
+
+function updateLineupDisplay() {
+    // Update left wing
+    if (currentLineup.leftWing) {
+        leftWingPlayerName.textContent = currentLineup.leftWing;
+        leftWingBtn.classList.add('assigned');
+    } else {
+        leftWingPlayerName.textContent = 'Click to assign';
+        leftWingBtn.classList.remove('assigned');
+    }
+    
+    // Update center
+    if (currentLineup.center) {
+        centerPlayerName.textContent = currentLineup.center;
+        centerBtn.classList.add('assigned');
+    } else {
+        centerPlayerName.textContent = 'Click to assign';
+        centerBtn.classList.remove('assigned');
+    }
+    
+    // Update right wing
+    if (currentLineup.rightWing) {
+        rightWingPlayerName.textContent = currentLineup.rightWing;
+        rightWingBtn.classList.add('assigned');
+    } else {
+        rightWingPlayerName.textContent = 'Click to assign';
+        rightWingBtn.classList.remove('assigned');
+    }
+    
+    // Update left defence
+    if (currentLineup.leftDefence) {
+        leftDefencePlayerName.textContent = currentLineup.leftDefence;
+        leftDefenceBtn.classList.add('assigned');
+    } else {
+        leftDefencePlayerName.textContent = 'Click to assign';
+        leftDefenceBtn.classList.remove('assigned');
+    }
+    
+    // Update right defence
+    if (currentLineup.rightDefence) {
+        rightDefencePlayerName.textContent = currentLineup.rightDefence;
+        rightDefenceBtn.classList.add('assigned');
+    } else {
+        rightDefencePlayerName.textContent = 'Click to assign';
+        rightDefenceBtn.classList.remove('assigned');
+    }
+}
+
+async function recordPlusMinus(type) {
+    // Check if at least one position is filled
+    const hasPlayers = Object.values(currentLineup).some(p => p !== null);
+    
+    if (!hasPlayers) {
+        await showAlert('Error', 'Please assign at least one player to a position');
+        return;
+    }
+    
+    const event = {
+        id: plusMinusIdCounter++,
+        type: type, // 'plus' or 'minus'
+        lineup: { ...currentLineup },
+        timestamp: new Date().toISOString()
+    };
+    
+    plusMinusEvents.push(event);
+    saveStatsToStorage();
+    renderPlusMinusList();
+    
+    // Update player stats if on Players tab
+    if (playersView.classList.contains('active')) {
+        renderPlayersList();
+    }
+}
+
+function clearLineup() {
+    currentLineup = {
+        leftWing: null,
+        center: null,
+        rightWing: null,
+        leftDefence: null,
+        rightDefence: null
+    };
+    activePositionButton = null;
+    
+    leftWingBtn.classList.remove('active');
+    centerBtn.classList.remove('active');
+    rightWingBtn.classList.remove('active');
+    leftDefenceBtn.classList.remove('active');
+    rightDefenceBtn.classList.remove('active');
+    
+    updateLineupDisplay();
+}
+
+function renderPlusMinusList() {
+    if (plusMinusEvents.length === 0) {
+        plusMinusList.innerHTML = '<p class="no-events">No +/- events recorded yet.</p>';
+        return;
+    }
+    
+    plusMinusList.innerHTML = '';
+    plusMinusEvents.forEach(event => {
+        const item = document.createElement('div');
+        item.className = `plusminus-item ${event.type}`;
+        
+        const info = document.createElement('div');
+        info.className = 'plusminus-info';
+        
+        const typeLabel = document.createElement('div');
+        typeLabel.className = 'plusminus-type';
+        typeLabel.textContent = event.type === 'plus' ? '+ Goal For' : '- Goal Against';
+        
+        const lineup = document.createElement('div');
+        lineup.className = 'lineup-players';
+        let lineupHTML = '';
+        
+        if (event.lineup.leftWing) lineupHTML += `<span class="position-item"><span class="position-label">LW:</span> ${event.lineup.leftWing}</span>`;
+        if (event.lineup.center) lineupHTML += `<span class="position-item"><span class="position-label">C:</span> ${event.lineup.center}</span>`;
+        if (event.lineup.rightWing) lineupHTML += `<span class="position-item"><span class="position-label">RW:</span> ${event.lineup.rightWing}</span>`;
+        if (event.lineup.leftDefence) lineupHTML += `<span class="position-item"><span class="position-label">LD:</span> ${event.lineup.leftDefence}</span>`;
+        if (event.lineup.rightDefence) lineupHTML += `<span class="position-item"><span class="position-label">RD:</span> ${event.lineup.rightDefence}</span>`;
+        
+        lineup.innerHTML = lineupHTML;
+        
+        info.appendChild(typeLabel);
+        info.appendChild(lineup);
+        
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'delete-plusminus-btn';
+        deleteBtn.textContent = 'Delete';
+        deleteBtn.addEventListener('click', () => deletePlusMinusEvent(event.id));
+        
+        item.appendChild(info);
+        item.appendChild(deleteBtn);
+        plusMinusList.appendChild(item);
+    });
+}
+
+async function deletePlusMinusEvent(eventId) {
+    const confirmed = await showConfirm('Confirm Delete', 'Delete this +/- event?');
+    if (confirmed) {
+        plusMinusEvents = plusMinusEvents.filter(e => e.id !== eventId);
+        saveStatsToStorage();
+        renderPlusMinusList();
+        
+        // Update player stats if on Players tab
+        if (playersView.classList.contains('active')) {
+            renderPlayersList();
+        }
+    }
+}
+
+// Faceoffs Functions
+function activateFaceoffAddButton() {
+    activeFaceoffAddButton = true;
+    
+    // Deactivate other buttons
+    goalBtn.classList.remove('active');
+    assist1Btn.classList.remove('active');
+    assist2Btn.classList.remove('active');
+    leftWingBtn.classList.remove('active');
+    centerBtn.classList.remove('active');
+    rightWingBtn.classList.remove('active');
+    leftDefenceBtn.classList.remove('active');
+    rightDefenceBtn.classList.remove('active');
+    activeAssignmentButton = null;
+    activePositionButton = null;
+    
+    // Re-render to show active state
+    renderFaceoffStats();
+}
+
+async function addPlayerToFaceoffs(playerName) {
+    if (faceoffStats.find(fs => fs.playerName === playerName)) {
+        await showAlert('Error', 'Player already in faceoff tracking');
+        activeFaceoffAddButton = false;
+        renderFaceoffStats();
+        return;
+    }
+    
+    faceoffStats.push({
+        playerName: playerName,
+        taken: 0,
+        won: 0
+    });
+    
+    activeFaceoffAddButton = false;
+    saveStatsToStorage();
+    renderFaceoffStats();
+}
+
+function incrementFaceoff(playerName, won) {
+    const player = faceoffStats.find(fs => fs.playerName === playerName);
+    if (player) {
+        player.taken++;
+        if (won) {
+            player.won++;
+        }
+        saveStatsToStorage();
+        renderFaceoffStats();
+        
+        // Update player stats if on Players tab
+        if (playersView.classList.contains('active')) {
+            renderPlayersList();
+        }
+    }
+}
+
+function renderFaceoffStats() {
+    faceoffPlayersList.innerHTML = '';
+    
+    // Render existing players
+    faceoffStats.forEach(player => {
+        const row = document.createElement('div');
+        row.className = 'faceoff-player-row';
+        
+        const name = document.createElement('div');
+        name.className = 'faceoff-player-name';
+        name.textContent = player.playerName;
+        
+        const taken = document.createElement('div');
+        taken.className = 'faceoff-stat';
+        taken.textContent = player.taken;
+        
+        const won = document.createElement('div');
+        won.className = 'faceoff-stat';
+        won.textContent = player.won;
+        
+        const actions = document.createElement('div');
+        actions.className = 'faceoff-actions';
+        
+        const plusBtn = document.createElement('button');
+        plusBtn.className = 'faceoff-btn faceoff-plus-btn';
+        plusBtn.textContent = '+';
+        plusBtn.title = 'Won faceoff';
+        plusBtn.addEventListener('click', () => incrementFaceoff(player.playerName, true));
+        
+        const minusBtn = document.createElement('button');
+        minusBtn.className = 'faceoff-btn faceoff-minus-btn';
+        minusBtn.textContent = '-';
+        minusBtn.title = 'Lost faceoff';
+        minusBtn.addEventListener('click', () => incrementFaceoff(player.playerName, false));
+        
+        actions.appendChild(plusBtn);
+        actions.appendChild(minusBtn);
+        
+        const deleteCol = document.createElement('div');
+        deleteCol.style.textAlign = 'center';
+        
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'faceoff-delete-btn';
+        deleteBtn.textContent = 'Delete';
+        deleteBtn.addEventListener('click', () => deleteFaceoffPlayer(player.playerName));
+        
+        deleteCol.appendChild(deleteBtn);
+        
+        row.appendChild(name);
+        row.appendChild(taken);
+        row.appendChild(won);
+        row.appendChild(actions);
+        row.appendChild(deleteCol);
+        
+        faceoffPlayersList.appendChild(row);
+    });
+    
+    // Add "Add Player" button row
+    const addRow = document.createElement('div');
+    addRow.className = 'add-faceoff-row';
+    
+    const addBtn = document.createElement('button');
+    addBtn.className = 'add-faceoff-btn';
+    if (activeFaceoffAddButton) {
+        addBtn.classList.add('active');
+    }
+    addBtn.textContent = 'Add Player';
+    addBtn.addEventListener('click', activateFaceoffAddButton);
+    
+    addRow.appendChild(addBtn);
+    faceoffPlayersList.appendChild(addRow);
+}
+
+async function deleteFaceoffPlayer(playerName) {
+    const confirmed = await showConfirm('Confirm Delete', `Remove ${playerName} from faceoff tracking?`);
+    if (confirmed) {
+        faceoffStats = faceoffStats.filter(fs => fs.playerName !== playerName);
+        saveStatsToStorage();
+        renderFaceoffStats();
+        
+        // Update player stats if on Players tab
+        if (playersView.classList.contains('active')) {
+            renderPlayersList();
+        }
     }
 }
 
 // Export stats to JSON
 async function exportStats() {
-    if (goals.length === 0) {
+    if (goals.length === 0 && plusMinusEvents.length === 0 && faceoffStats.length === 0) {
         await showAlert('Error', 'No stats to export!');
         return;
     }
@@ -690,7 +1120,10 @@ async function exportStats() {
         exportDate: new Date().toISOString(),
         gameName: statsGameName || 'Unnamed Game',
         totalGoals: goals.length,
-        goals: goals
+        totalPlusMinusEvents: plusMinusEvents.length,
+        goals: goals,
+        plusMinusEvents: plusMinusEvents,
+        faceoffStats: faceoffStats
     };
     
     const dataStr = JSON.stringify(exportData, null, 2);
@@ -734,23 +1167,44 @@ function handleStatsFileSelect(event) {
                 throw new Error('Invalid data format: missing or invalid goals array');
             }
             
+            const importGoals = data.goals.length;
+            const importPlusMinus = (data.plusMinusEvents || []).length;
+            const importFaceoffs = (data.faceoffStats || []).length;
+            
             // Ask user if they want to replace or merge
             const action = await showConfirm(
                 'Import Stats',
-                `Import ${data.goals.length} goals.\n\nClick OK to ADD to existing goals (${goals.length} current).\nClick CANCEL to REPLACE all existing goals.`
+                `Import ${importGoals} goals, ${importPlusMinus} +/- events, and ${importFaceoffs} faceoff players.\n\nClick OK to ADD to existing data.\nClick CANCEL to REPLACE all existing data.`
             );
             
             if (action) {
                 // Add to existing
                 goals = [...goals, ...data.goals];
-                await showAlert('Success', `Added ${data.goals.length} goals! Total: ${goals.length}`);
+                plusMinusEvents = [...plusMinusEvents, ...(data.plusMinusEvents || [])];
+                
+                // Merge faceoff stats (avoid duplicates, sum stats for same player)
+                const importedFaceoffs = data.faceoffStats || [];
+                importedFaceoffs.forEach(importedPlayer => {
+                    const existing = faceoffStats.find(fs => fs.playerName === importedPlayer.playerName);
+                    if (existing) {
+                        existing.taken += importedPlayer.taken;
+                        existing.won += importedPlayer.won;
+                    } else {
+                        faceoffStats.push({...importedPlayer});
+                    }
+                });
+                
+                await showAlert('Success', `Added ${importGoals} goals, ${importPlusMinus} +/- events, and ${importFaceoffs} faceoff players!`);
             } else {
                 // Replace all
                 goals = [...data.goals];
-                await showAlert('Success', `Replaced with ${data.goals.length} goals!`);
+                plusMinusEvents = [...(data.plusMinusEvents || [])];
+                faceoffStats = [...(data.faceoffStats || [])];
+                await showAlert('Success', `Replaced with ${importGoals} goals, ${importPlusMinus} +/- events, and ${importFaceoffs} faceoff players!`);
             }
             
-            goalIdCounter = Math.max(...goals.map(g => g.id), 0) + 1;
+            goalIdCounter = goals.length > 0 ? Math.max(...goals.map(g => g.id), 0) + 1 : 0;
+            plusMinusIdCounter = plusMinusEvents.length > 0 ? Math.max(...plusMinusEvents.map(e => e.id), 0) + 1 : 0;
             
             // Import game name if current is empty
             if (data.gameName && !statsGameNameInput.value.trim()) {
@@ -760,6 +1214,13 @@ function handleStatsFileSelect(event) {
             
             saveStatsToStorage();
             renderGoalsList();
+            renderPlusMinusList();
+            renderFaceoffStats();
+            
+            // Update player stats if on Players tab
+            if (playersView.classList.contains('active')) {
+                renderPlayersList();
+            }
             
         } catch (error) {
             await showAlert('Import Failed', `${error.message}\n\nPlease select a valid Hockey Tracker Stats JSON file.`);
@@ -1288,6 +1749,16 @@ function attachEventListeners() {
     exportStatsBtn.addEventListener('click', exportStats);
     importStatsBtn.addEventListener('click', importStats);
     statsFileInput.addEventListener('change', handleStatsFileSelect);
+    
+    // Lineup +/- buttons
+    leftWingBtn.addEventListener('click', () => activatePositionButton('leftWing'));
+    centerBtn.addEventListener('click', () => activatePositionButton('center'));
+    rightWingBtn.addEventListener('click', () => activatePositionButton('rightWing'));
+    leftDefenceBtn.addEventListener('click', () => activatePositionButton('leftDefence'));
+    rightDefenceBtn.addEventListener('click', () => activatePositionButton('rightDefence'));
+    plusBtn.addEventListener('click', () => recordPlusMinus('plus'));
+    minusBtn.addEventListener('click', () => recordPlusMinus('minus'));
+    clearLineupBtn.addEventListener('click', clearLineup);
 }
 
 // Start the app

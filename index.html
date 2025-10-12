@@ -173,28 +173,33 @@
             <!-- Stats View -->
             <div id="statsView" class="tab-content">
                 <div class="stats-management">
-                    <h2>Game Statistics</h2>
                     
-                    <!-- Game Name Section -->
-                    <div class="stats-game-name-section">
-                        <label for="statsGameNameInput">Game Name:</label>
-                        <input type="text" id="statsGameNameInput" placeholder="Enter game name (e.g., vs Maple Leafs)" maxlength="50">
-                    </div>
+                    
+                    <!-- Sticky Top Section -->
+                    <div class="stats-sticky-header">
+                        <!-- Game Name Section -->
+                        <div class="stats-game-name-section">
+                            <label for="statsGameNameInput">Game Name:</label>
+                            <input type="text" id="statsGameNameInput" placeholder="Enter game name (e.g., vs Maple Leafs)" maxlength="50">
+                        </div>
 
-                    <!-- Stats Actions -->
-                    <div class="stats-actions">
-                        <button id="exportStatsBtn" class="action-btn export-btn">Export Stats</button>
-                        <button id="importStatsBtn" class="action-btn import-btn">Import Stats</button>
-                    </div>
+                        <!-- Stats Actions -->
+                        <div class="stats-actions">
+                            <button id="exportStatsBtn" class="action-btn export-btn">Export Stats</button>
+                            <button id="importStatsBtn" class="action-btn import-btn">Import Stats</button>
+                        </div>
 
-                    <!-- Player Selection List -->
-                    <div class="stats-players-section">
-                        <h3>Select Players:</h3>
-                        <div id="statsPlayersList" class="stats-players-list">
-                            <p class="no-players">No players available. Add players in the Players tab.</p>
+                        <!-- Player Selection List -->
+                        <div class="stats-players-section">
+                            <h3>Select Players:</h3>
+                            <div id="statsPlayersList" class="stats-players-list">
+                                <p class="no-players">No players available. Add players in the Players tab.</p>
+                            </div>
                         </div>
                     </div>
 
+                    <!-- Scrollable Content Section -->
+                    <div class="stats-scrollable-content">
                     <!-- Goal & Assists Assignment -->
                     <div class="goal-assists-section">
                         <h3>Record Goal & Assists</h3>
@@ -233,6 +238,81 @@
                             <p class="no-goals">No goals recorded yet.</p>
                         </div>
                     </div>
+
+                    <!-- Lineup +/- Section -->
+                    <div class="lineup-section">
+                        <h3>Lineup +/-</h3>
+                        
+                        <!-- Forward Positions -->
+                        <div class="position-group">
+                            <h4>Forwards</h4>
+                            <div class="position-buttons">
+                                <button id="leftWingBtn" class="position-btn">
+                                    <span class="btn-label">Left Wing</span>
+                                    <span id="leftWingPlayerName" class="assigned-player">Click to assign</span>
+                                </button>
+                                <button id="centerBtn" class="position-btn">
+                                    <span class="btn-label">Center</span>
+                                    <span id="centerPlayerName" class="assigned-player">Click to assign</span>
+                                </button>
+                                <button id="rightWingBtn" class="position-btn">
+                                    <span class="btn-label">Right Wing</span>
+                                    <span id="rightWingPlayerName" class="assigned-player">Click to assign</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Defence Positions -->
+                        <div class="position-group">
+                            <h4>Defence</h4>
+                            <div class="position-buttons">
+                                <button id="leftDefenceBtn" class="position-btn">
+                                    <span class="btn-label">Left Defence</span>
+                                    <span id="leftDefencePlayerName" class="assigned-player">Click to assign</span>
+                                </button>
+                                <button id="rightDefenceBtn" class="position-btn">
+                                    <span class="btn-label">Right Defence</span>
+                                    <span id="rightDefencePlayerName" class="assigned-player">Click to assign</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- +/- Action Buttons -->
+                        <div class="plusminus-actions">
+                            <button id="plusBtn" class="plusminus-btn plus-btn">+ (Goal For)</button>
+                            <button id="minusBtn" class="plusminus-btn minus-btn">- (Goal Against)</button>
+                            <button id="clearLineupBtn" class="action-btn reset-btn">Clear</button>
+                        </div>
+                    </div>
+
+                    <!-- +/- Events List -->
+                    <div class="plusminus-list-section">
+                        <h3>+/- Events:</h3>
+                        <div id="plusMinusList" class="plusminus-list">
+                            <p class="no-events">No +/- events recorded yet.</p>
+                        </div>
+                    </div>
+
+                    <!-- Faceoffs Section -->
+                    <div class="faceoffs-section">
+                        <h3>Faceoffs Tracking</h3>
+                        
+                        <!-- Faceoff Stats Table -->
+                        <div class="faceoff-stats-table">
+                            <div class="faceoff-header">
+                                <div class="faceoff-col-player">Player</div>
+                                <div class="faceoff-col-taken">Faceoffs Taken</div>
+                                <div class="faceoff-col-won">Faceoffs Won</div>
+                                <div class="faceoff-col-actions">Actions</div>
+                                <div class="faceoff-col-delete">Delete</div>
+                            </div>
+                            <div id="faceoffPlayersList" class="faceoff-players-list">
+                                <!-- Faceoff players will be added here dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                    <!-- End Scrollable Content -->
                 </div>
             </div>
             <!-- End Stats View -->
