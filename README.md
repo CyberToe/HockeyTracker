@@ -1,154 +1,200 @@
-# 🏒 Hockey Shot Tracker
+# Hockey Shot Tracker
 
-A modern, responsive web application for tracking hockey shots on the ice in real-time. Built according to the Business Requirements Document v1.2.
+A comprehensive hockey analytics application with user authentication and real-time shot tracking capabilities.
 
 ## Features
 
 ### Core Functionality
-- **Interactive Rink Canvas**: Click anywhere on the hockey rink to place shot markers
-- **State Management**: Toggle between Score/Miss and For/Against states
-- **Visual Feedback**: Dynamic background colors and status display based on current state
-- **Shot Markers**: Four distinct marker styles for different state combinations:
-  - **Score + For**: Green filled circle with glow effect
-  - **Score + Against**: Orange filled circle with glow effect
-  - **Miss + For**: Cyan hollow circle
-  - **Miss + Against**: Pink hollow circle
+- **Real-time Shot Tracking**: Click on the hockey rink to place shot markers for goals and misses
+- **Player Management**: Add, remove, and track individual player statistics
+- **Advanced Statistics**: Track goals, assists, +/- events, and faceoff statistics
+- **Game Management**: Organize data by periods and games
+- **Data Export/Import**: Save and load game data in JSON format
 
-### Data Management
-- **Export**: Save your current session to a JSON file
-- **Import**: Load previously saved sessions
-- **Reset**: Clear all shots with confirmation
-- **Validation**: Imported files are validated for correct structure
+### User Authentication & Profile Management
+- **User Registration & Login**: Secure account creation with email validation
+- **Profile Management**: Update personal information, team name, and email
+- **Password Management**: Change passwords securely
+- **Account Deletion**: Permanent account removal with data cleanup
+- **Data Persistence**: All hockey data is tied to user accounts and stored securely
 
 ### User Interface
-- **Real-time Counters**: Track total shots, scores, and misses
-- **Visual Legend**: Quick reference for marker meanings
-- **Responsive Design**: Works seamlessly on desktop, tablet, and mobile devices
-- **Modern UI**: Beautiful gradient backgrounds that change with state
+- **Responsive Design**: Works on desktop, tablet, and mobile devices
+- **Intuitive Controls**: Easy-to-use interface for quick shot tracking
+- **Visual Feedback**: Color-coded shot markers and real-time statistics
+- **Modal Dialogs**: Clean authentication and profile management interfaces
 
-## How to Use
+## Installation & Setup
+
+### Prerequisites
+- Node.js (version 14 or higher)
+- npm (comes with Node.js)
+
+### Installation Steps
+
+1. **Clone or download the project files**
+   ```bash
+   # If using git
+   git clone <repository-url>
+   cd HockeyShotTracker
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Start the server**
+   ```bash
+   npm start
+   ```
+   
+   Or for development with auto-restart:
+   ```bash
+   npm run dev
+   ```
+
+4. **Access the application**
+   Open your web browser and navigate to:
+   ```
+   http://localhost:3000
+   ```
+
+## Usage Guide
 
 ### Getting Started
-1. Open `index.html` in any modern web browser
-2. No installation or setup required - it's 100% client-side
+1. **Create an Account**: Click "Register" in the top-right corner to create a new account
+2. **Login**: Use your credentials to access your personal hockey tracking data
+3. **Add Players**: Go to the Players tab to add team members
+4. **Start Tracking**: Switch to the Rink tab to begin tracking shots
 
 ### Tracking Shots
-1. **Select State**: Choose the current shot state using the toggle buttons
-   - Click **SCORE!** or **MISS** to set the result
-   - Click **FOR** or **AGAINST** to set the team
-2. **Place Marker**: Click on the rink where the shot was taken
-3. **Repeat**: Continue selecting states and placing markers as the game progresses
+1. **Select Result**: Choose "SCORE!" or "MISS"
+2. **Select Player/Team**: Choose a player or "AGAINST" for opponent shots
+3. **Select Period**: Choose which period you're tracking (1, 2, 3, or All)
+4. **Click on Rink**: Click anywhere on the hockey rink to place a shot marker
+5. **View Statistics**: Real-time statistics update automatically
 
-### Managing Data
-- **Export Session**: Click the **EXPORT** button to download your current session as a JSON file
-- **Import Session**: Click the **IMPORT** button to load a previously saved JSON file (imported shots are added to existing ones, not replaced)
-- **Reset**: Click the **RESET** button to clear all shots (with confirmation)
+### Managing Players
+- **Add Players**: Enter player name and click "Add Player"
+- **View Stats**: See individual player statistics including shots, goals, assists, and faceoff percentages
+- **Remove Players**: Click "Remove" next to any player
+- **Import/Export**: Save player rosters to JSON files
 
-### State Combinations
-The app supports four valid state combinations:
+### Advanced Statistics
+The Stats tab provides three sub-sections:
 
-| Result | Team | Marker Style | Background Color |
-|--------|------|--------------|------------------|
-| Score | For | Green filled | Green gradient |
-| Score | Against | Orange filled | Orange/Red gradient |
-| Miss | For | Cyan hollow | Cyan/Blue gradient |
-| Miss | Against | Pink hollow | Pink/Yellow gradient |
+#### Goals & Assists
+- Assign goal scorers and up to 2 assists per goal
+- Track goal history with timestamps
+- Delete goals if needed
+
+#### Lineup +/-
+- Assign players to specific positions (LW, C, RW, LD, RD)
+- Record +/- events when goals are scored
+- Track which players were on ice during each goal
+
+#### Faceoffs
+- Add players to faceoff tracking
+- Record faceoff wins (+) and losses (-)
+- View faceoff percentages for each player
+
+### Profile Management
+Click the profile button (👤) in the header to:
+- **Update Profile**: Change email, full name, and team name
+- **Change Password**: Update your account password
+- **Delete Account**: Permanently remove your account and all data
 
 ## Technical Details
 
-### File Structure
+### Backend Architecture
+- **Express.js Server**: RESTful API with authentication middleware
+- **SQLite Database**: Local database for user and data storage
+- **JWT Authentication**: Secure token-based authentication
+- **bcrypt Password Hashing**: Secure password storage
+- **Rate Limiting**: Protection against abuse
+
+### Frontend Architecture
+- **Vanilla JavaScript**: No external frameworks for optimal performance
+- **Canvas API**: Interactive hockey rink with shot visualization
+- **Local Storage Fallback**: Offline functionality when server is unavailable
+- **Responsive CSS**: Mobile-first design approach
+
+### Data Storage
+- **User Accounts**: Stored in SQLite with encrypted passwords
+- **Hockey Data**: Organized by user with JSON serialization
+- **Local Fallback**: Browser localStorage for offline use
+- **Data Types**: Shots, players, and statistics stored separately
+
+### Security Features
+- **Password Hashing**: bcrypt with salt rounds
+- **JWT Tokens**: Secure authentication with expiration
+- **Input Validation**: Server-side validation for all user inputs
+- **Rate Limiting**: Prevents brute force attacks
+- **CORS Protection**: Secure cross-origin requests
+
+## File Structure
 ```
 HockeyShotTracker/
-├── index.html          # Main HTML structure
-├── styles.css          # Styling and responsive design
-├── app.js              # Application logic
-└── README.md           # Documentation
+├── server.js              # Express server and API endpoints
+├── package.json           # Dependencies and scripts
+├── index.html             # Main application interface
+├── app.js                 # Frontend JavaScript logic
+├── styles.css             # Application styling
+├── README.md              # This documentation
+└── hockey_tracker.db      # SQLite database (created automatically)
 ```
 
-### Data Format
-Each shot is stored as an object with the following structure:
-```json
-{
-  "id": 0,
-  "x": 400,
-  "y": 212,
-  "resultState": "score",
-  "teamState": "for",
-  "timestamp": "2025-10-10T12:00:00.000Z"
-}
-```
+## API Endpoints
 
-Export files include metadata:
-```json
-{
-  "version": "1.0",
-  "exportDate": "2025-10-10T12:00:00.000Z",
-  "totalShots": 15,
-  "shots": [...]
-}
-```
+### Authentication
+- `POST /api/register` - Create new user account
+- `POST /api/login` - User login
+- `GET /api/profile` - Get user profile (requires auth)
+- `PUT /api/profile` - Update user profile (requires auth)
+- `PUT /api/change-password` - Change password (requires auth)
+- `DELETE /api/account` - Delete user account (requires auth)
+
+### Data Management
+- `POST /api/data/:type` - Save user data (shots/players/stats)
+- `GET /api/data/:type` - Load user data (shots/players/stats)
+
+## Development
+
+### Adding New Features
+1. **Backend**: Add new API endpoints in `server.js`
+2. **Frontend**: Update `app.js` with new functionality
+3. **Styling**: Add CSS rules in `styles.css`
+4. **Testing**: Test both authenticated and unauthenticated states
+
+### Database Schema
+The application uses three main tables:
+- `users`: User account information
+- `user_data`: JSON storage for hockey tracking data
+
+### Environment Variables
+For production deployment, set these environment variables:
+- `PORT`: Server port (default: 3000)
+- `JWT_SECRET`: Secret key for JWT tokens
+
+## Troubleshooting
+
+### Common Issues
+1. **Port Already in Use**: Change the PORT environment variable
+2. **Database Errors**: Delete `hockey_tracker.db` to reset the database
+3. **Authentication Issues**: Clear browser localStorage and re-register
+4. **Mobile Issues**: Ensure you're using a modern browser with Canvas support
 
 ### Browser Compatibility
-- Chrome (recommended)
-- Firefox
-- Safari
-- Edge
-- Mobile browsers (iOS Safari, Chrome Mobile)
-
-## Requirements Met
-
-This application fulfills all requirements from the BRD:
-
-### Functional Requirements
-- ✅ FR-1: Toggle Score/Miss buttons
-- ✅ FR-2: Toggle For/Against buttons
-- ✅ FR-3: Four valid state combinations
-- ✅ FR-4: Visual feedback for current state
-- ✅ FR-5: Clickable rink interaction
-- ✅ FR-6: Unique marker styling per state
-- ✅ FR-7: Shot data tracking with all required fields
-- ✅ FR-8: Reset functionality
-- ✅ FR-9: Export to JSON file
-- ✅ FR-10: Import from JSON file
-- ✅ FR-11: Data validation on import
-- ✅ FR-12: Responsive design
-
-### Out of Scope (as specified)
-- ❌ Backend database or user accounts
-- ❌ Real-time multiplayer syncing
-- ❌ Analytics, charts, or statistics
-
-## Usage Tips
-
-1. **Compact Design**: The app is optimized to fit on a standard screen at 100% zoom - no need to zoom out!
-2. **Mobile Use**: The app is fully responsive - perfect for tracking shots mid-game on a tablet
-3. **Undo Feature**: Made a mistake? Use the UNDO button to remove the last shot placed
-4. **Team Statistics**: Track shots, scores, and misses separately for FOR and AGAINST teams
-5. **Data Backup**: Export your data regularly to avoid losing session data
-6. **File Naming**: Export files are automatically named with timestamps for easy organization
-7. **State Selection**: The background color changes to match your current state for quick visual reference
-
-## Future Enhancements
-
-Potential features for future versions (currently out of scope):
-- Shot statistics and heat maps
-- Game session management
-- Player-specific tracking
-- Export to PDF reports
-- Cloud storage integration
+- Chrome/Edge: Full support
+- Firefox: Full support  
+- Safari: Full support
+- Mobile browsers: Full support with touch events
 
 ## License
 
-This project was created for personal use. Feel free to modify and distribute as needed.
+MIT License - Feel free to use and modify for your own hockey tracking needs!
 
 ## Support
 
-For issues or questions, please refer to the source code comments or contact the development team.
-
----
-
-**Version**: 1.0  
-**Last Updated**: October 10, 2025  
-**Author**: Built for Paul Leblanc
-
-
+For issues or feature requests, please check the browser console for error messages and ensure all dependencies are properly installed.

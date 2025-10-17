@@ -43,7 +43,23 @@ header {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     padding: 8px;
-    text-align: center;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.header-left {
+    text-align: left;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
 }
 
 header h1 {
@@ -54,6 +70,752 @@ header h1 {
 .subtitle {
     font-size: 0.75em;
     opacity: 0.9;
+}
+
+/* Authentication UI */
+.auth-section {
+    display: flex;
+    gap: 10px;
+}
+
+.auth-btn {
+    padding: 8px 16px;
+    border: 2px solid white;
+    background: transparent;
+    color: white;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.85em;
+}
+
+.auth-btn:hover {
+    background: white;
+    color: #667eea;
+    transform: translateY(-2px);
+}
+
+.login-btn {
+    border-color: rgba(255, 255, 255, 0.8);
+}
+
+.register-btn {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.register-btn:hover {
+    background: white;
+    color: #667eea;
+}
+
+/* User Profile Section */
+.user-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    text-align: right;
+}
+
+.user-name {
+    font-weight: bold;
+    font-size: 0.9em;
+}
+
+.user-team {
+    font-size: 0.75em;
+    opacity: 0.8;
+}
+
+.user-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.profile-btn {
+    width: 36px;
+    height: 36px;
+    border: 2px solid white;
+    background: transparent;
+    color: white;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1.1em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-btn:hover {
+    background: white;
+    color: #667eea;
+    transform: translateY(-2px);
+}
+
+.logout-btn {
+    padding: 6px 12px;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    background: transparent;
+    color: white;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.8em;
+}
+
+.logout-btn:hover {
+    background: rgba(220, 53, 69, 0.8);
+    border-color: rgba(220, 53, 69, 0.8);
+    transform: translateY(-2px);
+}
+
+/* Hidden utility class */
+.hidden {
+    display: none !important;
+}
+
+/* Global Success Message */
+.global-success-message {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+    color: white;
+    padding: 15px 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+    font-weight: bold;
+    font-size: 0.9em;
+    z-index: 10000;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+}
+
+.global-success-message:not(.hidden) {
+    transform: translateX(0);
+}
+
+/* Welcome Screen */
+.welcome-screen {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 60vh;
+    padding: 40px 20px;
+}
+
+.welcome-content {
+    max-width: 800px;
+    text-align: center;
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.welcome-content h2 {
+    color: #667eea;
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+.welcome-content > p {
+    color: #666;
+    font-size: 1.2em;
+    margin-bottom: 40px;
+    line-height: 1.6;
+}
+
+.welcome-features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.feature {
+    background: #f8f9fa;
+    padding: 25px;
+    border-radius: 8px;
+    border: 2px solid #e0e0e0;
+    transition: all 0.3s ease;
+}
+
+.feature:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+    border-color: #667eea;
+}
+
+.feature h3 {
+    color: #667eea;
+    font-size: 1.3em;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.feature p {
+    color: #666;
+    font-size: 0.95em;
+    line-height: 1.5;
+}
+
+.welcome-actions {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.welcome-btn {
+    padding: 15px 30px;
+    font-size: 1.1em;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid;
+    min-width: 150px;
+}
+
+.welcome-btn.login-btn {
+    background: white;
+    color: #667eea;
+    border-color: #667eea;
+}
+
+.welcome-btn.login-btn:hover {
+    background: #667eea;
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+}
+
+.welcome-btn.register-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-color: transparent;
+}
+
+.welcome-btn.register-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+/* Main App */
+.main-app {
+    display: block;
+}
+
+/* Footer styling */
+footer {
+    transition: opacity 0.3s ease;
+}
+
+/* Team Management Styles */
+.team-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.team-header-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.add-team-btn {
+    padding: 6px 12px;
+    background: #4ade80;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.85em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.add-team-btn:hover {
+    background: #22c55e;
+    transform: translateY(-2px);
+}
+
+.join-team-btn {
+    padding: 6px 12px;
+    background: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: all 0.2s ease;
+}
+
+.join-team-btn:hover {
+    background: #2563eb;
+    transform: translateY(-2px);
+}
+
+.add-team-form {
+    background: #f8f9fa;
+    padding: 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    margin-bottom: 15px;
+}
+
+.join-team-form {
+    background: #f0f9ff;
+    padding: 15px;
+    border: 2px solid #0ea5e9;
+    border-radius: 6px;
+    margin-bottom: 15px;
+}
+
+.team-type-selection {
+    margin: 10px 0;
+    display: flex;
+    gap: 20px;
+}
+
+.team-type-selection label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+
+.add-team-form input {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    font-size: 0.9em;
+    margin-bottom: 10px;
+}
+
+.add-team-form input:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.add-team-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.save-team-btn {
+    padding: 8px 16px;
+    background: #4ade80;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.85em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.save-team-btn:hover {
+    background: #22c55e;
+    transform: translateY(-2px);
+}
+
+.cancel-team-btn {
+    padding: 8px 16px;
+    background: #6b7280;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.85em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.cancel-team-btn:hover {
+    background: #4b5563;
+    transform: translateY(-2px);
+}
+
+.profile-teams-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.profile-team-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 15px;
+    background: #f8f9fa;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.profile-team-item:hover {
+    border-color: #667eea;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+}
+
+.profile-team-item.current {
+    background: #fef3c7;
+    border-color: #f59e0b;
+}
+
+.profile-team-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.profile-team-name {
+    font-weight: bold;
+    color: #333;
+}
+
+.profile-team-item.current .profile-team-name {
+    color: #92400e;
+}
+
+.profile-team-meta {
+    font-size: 0.8em;
+    color: #666;
+}
+
+.team-string {
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    color: #2563eb;
+    background: #f0f9ff;
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid #0ea5e9;
+}
+
+/* Game Name Input Styling */
+.game-name-section {
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    border: 1px solid #dee2e6;
+}
+
+.game-name-section label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #495057;
+}
+
+.game-name-section input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.game-name-section input:focus {
+    outline: 0;
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.profile-team-item.current .profile-team-meta {
+    color: #92400e;
+    font-weight: bold;
+}
+
+.profile-team-actions {
+    display: flex;
+    gap: 6px;
+}
+
+.profile-team-action-btn {
+    padding: 4px 8px;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.75em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.profile-edit-team-btn {
+    background: #3b82f6;
+    color: white;
+}
+
+.profile-edit-team-btn:hover {
+    background: #2563eb;
+}
+
+.profile-delete-team-btn {
+    background: #ef4444;
+    color: white;
+}
+
+.profile-delete-team-btn:hover {
+    background: #dc2626;
+}
+
+/* Delete Confirmation Modal */
+.delete-confirmation {
+    text-align: center;
+    padding: 20px 0;
+}
+
+.delete-confirmation p {
+    font-size: 1.1em;
+    color: #333;
+    margin-bottom: 25px;
+}
+
+.delete-confirmation .form-actions {
+    justify-content: center;
+    gap: 15px;
+}
+
+.danger-btn {
+    background: #ef4444;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.danger-btn:hover {
+    background: #dc2626;
+    transform: translateY(-2px);
+}
+
+.team-selector {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.switch-team-btn {
+    width: 24px;
+    height: 24px;
+    border: none;
+    background: transparent;
+    color: #667eea;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9em;
+}
+
+.switch-team-btn:hover {
+    background: #667eea;
+    color: white;
+    transform: scale(1.1);
+}
+
+.manage-teams-btn {
+    padding: 8px 12px;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.8em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.manage-teams-btn:hover {
+    background: #5a67d8;
+    transform: translateY(-2px);
+}
+
+.team-management-content {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.team-section {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    border: 2px solid #e0e0e0;
+}
+
+.team-section h4 {
+    color: #667eea;
+    margin-bottom: 15px;
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+.team-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.teams-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.team-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: white;
+    padding: 12px 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.team-item:hover {
+    border-color: #667eea;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+}
+
+.team-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.team-name {
+    font-weight: bold;
+    color: #333;
+}
+
+.team-meta {
+    font-size: 0.8em;
+    color: #666;
+}
+
+.team-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.team-action-btn {
+    padding: 6px 10px;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.8em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.edit-team-btn {
+    background: #4ade80;
+    color: white;
+}
+
+.edit-team-btn:hover {
+    background: #22c55e;
+}
+
+.delete-team-btn {
+    background: #ef4444;
+    color: white;
+}
+
+.delete-team-btn:hover {
+    background: #dc2626;
+}
+
+.current-team {
+    background: #fef3c7;
+    border-color: #f59e0b;
+}
+
+.current-team .team-name {
+    color: #92400e;
+}
+
+/* Team Switching Styles */
+.team-switch-content {
+    padding: 10px 0;
+}
+
+.team-switch-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 15px;
+}
+
+.team-switch-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 15px;
+    background: #f8f9fa;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.team-switch-item:hover {
+    border-color: #667eea;
+    background: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+}
+
+.team-switch-item.current {
+    background: #fef3c7;
+    border-color: #f59e0b;
+}
+
+.team-switch-item .team-name {
+    font-weight: bold;
+    color: #333;
+}
+
+.team-switch-item.current .team-name {
+    color: #92400e;
+}
+
+.team-switch-item .team-indicator {
+    font-size: 0.8em;
+    color: #666;
+}
+
+.team-switch-item.current .team-indicator {
+    color: #92400e;
+    font-weight: bold;
 }
 
 main {
@@ -300,6 +1062,77 @@ main {
     flex-wrap: wrap;
     gap: 6px;
     margin-bottom: 8px;
+}
+
+/* Player Selection Below Direction */
+.player-selection-below-direction {
+    margin-bottom: 15px;
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 2px solid #e0e0e0;
+}
+
+.player-buttons-full-width {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 12px;
+    width: 100%;
+}
+
+.player-buttons-full-width .player-btn {
+    padding: 8px 12px;
+    border: 2px solid #28a745;
+    background: white;
+    color: #28a745;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.85em;
+    white-space: nowrap;
+    flex: 0 0 auto;
+}
+
+.player-buttons-full-width .player-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.player-buttons-full-width .player-btn.active {
+    background: #28a745;
+    color: white;
+}
+
+.against-button-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.against-btn-below {
+    padding: 10px 20px;
+    border: 2px solid #667eea;
+    background: white;
+    color: #667eea;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9em;
+    white-space: nowrap;
+}
+
+.against-btn-below:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.against-btn-below.active {
+    background: #667eea;
+    color: white;
 }
 
 .player-btn {
@@ -770,6 +1603,24 @@ footer {
         overflow-y: auto;
     }
 
+    .player-selection-below-direction {
+        padding: 10px;
+    }
+
+    .player-buttons-full-width {
+        gap: 6px;
+    }
+
+    .player-buttons-full-width .player-btn {
+        font-size: 0.8em;
+        padding: 6px 10px;
+    }
+
+    .against-btn-below {
+        font-size: 0.85em;
+        padding: 8px 16px;
+    }
+
     .add-player-section {
         flex-direction: column;
     }
@@ -1127,6 +1978,129 @@ footer {
     padding: 15px;
     border-radius: 8px;
     margin-bottom: 20px;
+}
+
+/* Goals & Assists Player Selection */
+.goals-assists-player-selection {
+    margin-bottom: 20px;
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 2px solid #e0e0e0;
+}
+
+.goals-assists-player-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    width: 100%;
+}
+
+.goals-assists-player-buttons .player-btn {
+    padding: 8px 12px;
+    border: 2px solid #28a745;
+    background: white;
+    color: #28a745;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.85em;
+    white-space: nowrap;
+    flex: 0 0 auto;
+}
+
+.goals-assists-player-buttons .player-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.goals-assists-player-buttons .player-btn.active {
+    background: #28a745;
+    color: white;
+}
+
+/* Lineup Player Selection */
+.lineup-player-selection {
+    margin-bottom: 20px;
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 2px solid #e0e0e0;
+}
+
+.lineup-player-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    width: 100%;
+}
+
+.lineup-player-buttons .player-btn {
+    padding: 8px 12px;
+    border: 2px solid #28a745;
+    background: white;
+    color: #28a745;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.85em;
+    white-space: nowrap;
+    flex: 0 0 auto;
+}
+
+.lineup-player-buttons .player-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.lineup-player-buttons .player-btn.active {
+    background: #28a745;
+    color: white;
+}
+
+/* Faceoffs Player Selection */
+.faceoffs-player-selection {
+    margin-bottom: 20px;
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 2px solid #e0e0e0;
+}
+
+.faceoffs-player-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    width: 100%;
+}
+
+.faceoffs-player-buttons .player-btn {
+    padding: 8px 12px;
+    border: 2px solid #28a745;
+    background: white;
+    color: #28a745;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.85em;
+    white-space: nowrap;
+    flex: 0 0 auto;
+}
+
+.faceoffs-player-buttons .player-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.faceoffs-player-buttons .player-btn.active {
+    background: #28a745;
+    color: white;
 }
 
 .assignment-buttons {
@@ -1675,6 +2649,45 @@ footer {
         grid-template-columns: 1fr;
     }
 
+    .goals-assists-player-selection {
+        padding: 10px;
+    }
+
+    .goals-assists-player-buttons {
+        gap: 6px;
+    }
+
+    .goals-assists-player-buttons .player-btn {
+        font-size: 0.8em;
+        padding: 6px 10px;
+    }
+
+    .lineup-player-selection {
+        padding: 10px;
+    }
+
+    .lineup-player-buttons {
+        gap: 6px;
+    }
+
+    .lineup-player-buttons .player-btn {
+        font-size: 0.8em;
+        padding: 6px 10px;
+    }
+
+    .faceoffs-player-selection {
+        padding: 10px;
+    }
+
+    .faceoffs-player-buttons {
+        gap: 6px;
+    }
+
+    .faceoffs-player-buttons .player-btn {
+        font-size: 0.8em;
+        padding: 6px 10px;
+    }
+
     .submit-clear-buttons {
         flex-direction: column;
     }
@@ -1719,6 +2732,315 @@ footer {
     }
 }
 
+/* Authentication Modals */
+.auth-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10001;
+}
+
+.auth-modal.show {
+    display: block;
+}
+
+.auth-modal-content {
+    min-width: 400px;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-close-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 1.5em;
+    color: white;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.modal-close-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Authentication Forms */
+.auth-form {
+    padding: 0;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+    font-size: 0.9em;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    font-size: 0.9em;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 8px rgba(102, 126, 234, 0.3);
+}
+
+.form-group input[readonly] {
+    background-color: #f8f9fa;
+    color: #666;
+}
+
+.form-actions {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.auth-submit-btn {
+    width: 100%;
+    padding: 12px 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1em;
+}
+
+.auth-submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+}
+
+.auth-submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.auth-switch-btn {
+    width: 100%;
+    padding: 10px 20px;
+    background: transparent;
+    color: #667eea;
+    border: 2px solid #667eea;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9em;
+}
+
+.auth-switch-btn:hover {
+    background: #667eea;
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* Error and Success Messages */
+.error-message {
+    background: #f8d7da;
+    color: #721c24;
+    padding: 10px 15px;
+    border-radius: 6px;
+    margin-top: 15px;
+    border: 1px solid #f5c6cb;
+    font-size: 0.9em;
+}
+
+.success-message {
+    background: #d4edda;
+    color: #155724;
+    padding: 10px 15px;
+    border-radius: 6px;
+    margin-top: 15px;
+    border: 1px solid #c3e6cb;
+    font-size: 0.9em;
+}
+
+/* Profile Management */
+.profile-tabs {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.profile-tab-btn {
+    flex: 1;
+    padding: 10px 15px;
+    background: transparent;
+    color: #666;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: bold;
+    font-size: 0.9em;
+}
+
+.profile-tab-btn.active {
+    color: #667eea;
+    border-bottom-color: #667eea;
+}
+
+.profile-tab-btn:hover {
+    color: #667eea;
+    background: rgba(102, 126, 234, 0.1);
+}
+
+.profile-tab-content {
+    display: none;
+}
+
+.profile-tab-content.active {
+    display: block;
+}
+
+/* Account Actions */
+.account-actions {
+    padding: 20px 0;
+}
+
+.danger-zone {
+    background: #fff5f5;
+    border: 2px solid #fed7d7;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+}
+
+.danger-zone h4 {
+    color: #e53e3e;
+    margin-bottom: 10px;
+    font-size: 1.1em;
+}
+
+.danger-zone p {
+    color: #666;
+    margin-bottom: 15px;
+    font-size: 0.9em;
+}
+
+.danger-btn {
+    padding: 10px 20px;
+    background: #e53e3e;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9em;
+}
+
+.danger-btn:hover {
+    background: #c53030;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(229, 62, 62, 0.4);
+}
+
+/* Responsive Welcome Screen */
+@media (max-width: 768px) {
+    .welcome-content {
+        padding: 30px 20px;
+    }
+
+    .welcome-content h2 {
+        font-size: 2em;
+    }
+
+    .welcome-content > p {
+        font-size: 1.1em;
+    }
+
+    .welcome-features {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .welcome-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .welcome-btn {
+        width: 100%;
+        max-width: 250px;
+    }
+}
+
+/* Responsive Authentication */
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+
+    .header-left {
+        text-align: center;
+    }
+
+    .user-info {
+        align-items: center;
+        text-align: center;
+    }
+
+    .user-actions {
+        justify-content: center;
+    }
+
+    .auth-modal-content {
+        min-width: 90%;
+        max-width: 90%;
+    }
+
+    .profile-tabs {
+        flex-direction: column;
+    }
+
+    .profile-tab-btn {
+        text-align: left;
+        border-bottom: none;
+        border-left: 3px solid transparent;
+    }
+
+    .profile-tab-btn.active {
+        border-bottom: none;
+        border-left-color: #667eea;
+        background: rgba(102, 126, 234, 0.1);
+    }
+}
+
 /* Responsive Modal */
 @media (max-width: 480px) {
     .modal-content {
@@ -1736,6 +3058,251 @@ footer {
     }
     
     .modal-btn {
+        width: 100%;
+    }
+
+    .auth-modal-content {
+        min-width: 95%;
+        max-width: 95%;
+    }
+
+    .form-group input {
+        font-size: 16px; /* Prevent zoom on iOS */
+    }
+}
+
+/* Main Navigation Styles */
+.main-navigation {
+    display: flex;
+    background: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    margin-bottom: 20px;
+}
+
+.main-nav-btn {
+    flex: 1;
+    padding: 15px 20px;
+    border: none;
+    background: transparent;
+    color: #6c757d;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-bottom: 3px solid transparent;
+}
+
+.main-nav-btn:hover {
+    background: #e9ecef;
+    color: #495057;
+}
+
+.main-nav-btn.active {
+    color: #667eea;
+    border-bottom-color: #667eea;
+    background: white;
+}
+
+/* Games Management Styles */
+.games-management {
+    padding: 20px;
+}
+
+.game-selection-section {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+}
+
+.game-dropdown-container {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.game-dropdown {
+    flex: 1;
+    padding: 10px 15px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    font-size: 16px;
+    background: white;
+}
+
+.add-game-form {
+    margin-top: 20px;
+    padding: 20px;
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+}
+
+.add-game-form .form-group {
+    margin-bottom: 15px;
+}
+
+.add-game-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #495057;
+}
+
+.add-game-form input {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.game-stats-section {
+    margin-top: 30px;
+}
+
+.stats-type-selection {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+}
+
+.stats-type-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+
+.stat-type-btn {
+    padding: 10px 20px;
+    border: 1px solid #ced4da;
+    background: white;
+    color: #495057;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 14px;
+}
+
+.stat-type-btn:hover {
+    background: #e9ecef;
+    border-color: #adb5bd;
+}
+
+.stat-type-btn.active {
+    background: #667eea;
+    color: white;
+    border-color: #667eea;
+}
+
+.stat-view {
+    display: none;
+    padding: 20px;
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.stat-view.active {
+    display: block;
+}
+
+/* Game-specific styles */
+.goal-item, .plusminus-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    background: #f8f9fa;
+    border-radius: 6px;
+    border: 1px solid #dee2e6;
+}
+
+.delete-goal-btn, .delete-plusminus-btn {
+    padding: 5px 10px;
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.delete-goal-btn:hover, .delete-plusminus-btn:hover {
+    background: #c82333;
+}
+
+.faceoff-player-row {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    background: #f8f9fa;
+    border-radius: 6px;
+    border: 1px solid #dee2e6;
+}
+
+.faceoff-col-player, .faceoff-col-taken, .faceoff-col-won, .faceoff-col-actions, .faceoff-col-delete {
+    flex: 1;
+    text-align: center;
+}
+
+.faceoff-col-actions button {
+    margin: 0 2px;
+    padding: 4px 8px;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.faceoff-col-delete button {
+    padding: 4px 8px;
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+/* Responsive adjustments for games */
+@media (max-width: 768px) {
+    .game-dropdown-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .stats-type-buttons {
+        flex-direction: column;
+    }
+    
+    .stat-type-btn {
+        text-align: center;
+    }
+    
+    .faceoff-player-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .faceoff-col-player, .faceoff-col-taken, .faceoff-col-won, .faceoff-col-actions, .faceoff-col-delete {
+        flex: none;
         width: 100%;
     }
 }

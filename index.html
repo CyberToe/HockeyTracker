@@ -9,17 +9,70 @@
 <body>
     <div class="container">
         <header>
-            <h1>🏒 Hockey Tracker</h1>
-            <p class="subtitle">Real Time Analytics for Hockey</p>
+            <div class="header-content">
+                <div class="header-left">
+                    <h1>🏒 Hockey Tracker</h1>
+                    <p class="subtitle">Real Time Analytics for Hockey</p>
+                </div>
+                <div class="header-right">
+                    <!-- Login/Register Buttons (shown when not logged in) -->
+                    <div id="authButtons" class="auth-section">
+                        <button id="loginBtn" class="auth-btn login-btn">Login</button>
+                        <button id="registerBtn" class="auth-btn register-btn">Register</button>
+                    </div>
+                    
+                    <!-- User Profile Section (shown when logged in) -->
+                    <div id="userProfile" class="user-section hidden">
+                        <div class="user-info">
+                            <span id="userDisplayName" class="user-name"></span>
+                            <div class="team-selector">
+                                <span id="userTeam" class="user-team"></span>
+                                <button id="switchTeamBtn" class="switch-team-btn" title="Switch Team">🔄</button>
+                            </div>
+                        </div>
+                        <div class="user-actions">
+                            <button id="profileBtn" class="profile-btn" title="Manage Profile">👤</button>
+                            <button id="logoutBtn" class="logout-btn" title="Logout">Logout</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </header>
 
         <main>
-            <!-- Tab Navigation -->
-            <div class="tab-navigation">
-                <button id="playersTab" class="tab-btn active">Players</button>
-                <button id="rinkTab" class="tab-btn">Rink</button>
-                <button id="statsTab" class="tab-btn">Stats</button>
+            <!-- Welcome Screen (shown when not logged in) -->
+            <div id="welcomeScreen" class="welcome-screen">
+                <div class="welcome-content">
+                    <h2>Welcome to Hockey Tracker</h2>
+                    <p>Track shots, manage players, and analyze your hockey team's performance in real-time.</p>
+                    <div class="welcome-features">
+                        <div class="feature">
+                            <h3>🎯 Shot Tracking</h3>
+                            <p>Click on the rink to place shot markers for goals and misses</p>
+                        </div>
+                        <div class="feature">
+                            <h3>👥 Player Management</h3>
+                            <p>Add players and track individual statistics</p>
+                        </div>
+                        <div class="feature">
+                            <h3>📊 Advanced Stats</h3>
+                            <p>Track goals, assists, +/- events, and faceoff statistics</p>
+                        </div>
+                    </div>
+                    <div class="welcome-actions">
+                        <button id="welcomeLoginBtn" class="welcome-btn login-btn">Login</button>
+                        <button id="welcomeRegisterBtn" class="welcome-btn register-btn">Create Account</button>
+                    </div>
+                </div>
             </div>
+
+            <!-- Main Application Content (shown when logged in) -->
+            <div id="mainApp" class="main-app hidden">
+                <!-- Main Navigation -->
+                <div class="main-navigation">
+                    <button id="playersBtn" class="main-nav-btn active">Players</button>
+                    <button id="gamesBtn" class="main-nav-btn">Games</button>
+                </div>
 
             <!-- Players View -->
             <div id="playersView" class="tab-content active">
@@ -50,53 +103,229 @@
             </div>
             <!-- End Players View -->
 
-            <!-- Rink View -->
-            <div id="rinkView" class="tab-content">
-                <!-- Game Name Section -->
-                <div class="game-name-section">
-                    <label for="gameNameInput">Game Name:</label>
-                    <input type="text" id="gameNameInput" placeholder="Enter game name (e.g., vs Maple Leafs)" maxlength="50">
+            <!-- Games View -->
+            <div id="gamesView" class="tab-content">
+                <div class="games-management">
+                    <h2>Game Management</h2>
+                    
+                    <!-- Game Selection Section -->
+                    <div class="game-selection-section">
+                        <h3>Select Game:</h3>
+                        <div class="game-dropdown-container">
+                            <select id="gameDropdown" class="game-dropdown">
+                                <option value="">Select a game...</option>
+                            </select>
+                            <button id="addGameBtn" class="action-btn export-btn">Add New Game</button>
+                            <button id="deleteGameBtn" class="action-btn delete-btn" style="display: none;">Delete Game</button>
+                        </div>
+                    </div>
+
+                    <!-- Add Game Form (hidden by default) -->
+                    <div id="addGameForm" class="add-game-form hidden">
+                        <h3>Add New Game</h3>
+                        <div class="form-group">
+                            <label for="newGameName">Game Name:</label>
+                            <input type="text" id="newGameName" placeholder="e.g., vs Maple Leafs" maxlength="50">
+                        </div>
+                        <div class="form-group">
+                            <label for="newGameDate">Game Date:</label>
+                            <input type="date" id="newGameDate">
+                        </div>
+                        <div class="form-actions">
+                            <button id="saveGameBtn" class="action-btn export-btn">Save Game</button>
+                            <button id="cancelGameBtn" class="action-btn reset-btn">Cancel</button>
+                        </div>
+                    </div>
+
+                    <!-- Game Stats Section -->
+                    <div id="gameStatsSection" class="game-stats-section hidden">
+                        <h3>Game Statistics</h3>
+                        
+                        <!-- Stats Type Selection -->
+                        <div class="stats-type-selection">
+                            <h4>Select Stat Type:</h4>
+                            <div class="stats-type-buttons">
+                                <button id="rinkStatBtn" class="stat-type-btn active">Rink</button>
+                                <button id="goalsAssistsStatBtn" class="stat-type-btn">Goals & Assists</button>
+                                <button id="lineupStatBtn" class="stat-type-btn">Lineup +/-</button>
+                                <button id="faceoffsStatBtn" class="stat-type-btn">Faceoffs</button>
+                            </div>
+                        </div>
+
+                        <!-- Goals & Assists Stat View -->
+                        <div id="goalsAssistsStatView" class="stat-view">
+                            <!-- Goal & Assists Assignment -->
+                            <div class="goal-assists-section">
+                                <h4>Record Goal & Assists</h4>
+                                
+                                <!-- Player Selection for Goals & Assists -->
+                                <div class="goals-assists-player-selection">
+                                    <div id="goalsAssistsPlayerButtons" class="goals-assists-player-buttons">
+                                        <!-- Player buttons will be dynamically added here -->
+                                    </div>
+                                </div>
+                                
+                                <div class="assignment-buttons">
+                                    <div class="assignment-slot">
+                                        <button id="gameGoalBtn" class="assignment-btn goal-btn">
+                                            <span class="btn-label">Goal</span>
+                                            <span id="gameGoalPlayerName" class="assigned-player">Click to assign</span>
+                                        </button>
+                                    </div>
+                                    <div class="assignment-slot">
+                                        <button id="gameAssist1Btn" class="assignment-btn assist-btn">
+                                            <span class="btn-label">Assist 1</span>
+                                            <span id="gameAssist1PlayerName" class="assigned-player">Click to assign</span>
+                                        </button>
+                                    </div>
+                                    <div class="assignment-slot">
+                                        <button id="gameAssist2Btn" class="assignment-btn assist-btn">
+                                            <span class="btn-label">Assist 2</span>
+                                            <span id="gameAssist2PlayerName" class="assigned-player">Click to assign</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="submit-clear-buttons">
+                                    <button id="gameSubmitGoalBtn" class="action-btn export-btn">Submit</button>
+                                    <button id="gameClearAssignmentsBtn" class="action-btn reset-btn">Clear</button>
+                                </div>
+                            </div>
+
+                            <!-- Goals List -->
+                            <div class="goals-list-section">
+                                <h4>Goals Recorded:</h4>
+                                <div id="gameGoalsList" class="goals-list">
+                                    <p class="no-goals">No goals recorded yet.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Lineup +/- Stat View -->
+                        <div id="lineupStatView" class="stat-view">
+                            <!-- Lineup +/- Section -->
+                            <div class="lineup-section">
+                                <h4>Lineup +/-</h4>
+                                
+                                <!-- Player Selection for Lineup -->
+                                <div class="lineup-player-selection">
+                                    <div id="lineupPlayerButtons" class="lineup-player-buttons">
+                                        <!-- Player buttons will be dynamically added here -->
+                                    </div>
+                                </div>
+                                
+                                <!-- Forward Positions -->
+                                <div class="position-group">
+                                    <h5>Forwards</h5>
+                                    <div class="position-buttons">
+                                        <button id="gameLeftWingBtn" class="position-btn">
+                                            <span class="btn-label">Left Wing</span>
+                                            <span id="gameLeftWingPlayerName" class="assigned-player">Click to assign</span>
+                                        </button>
+                                        <button id="gameCenterBtn" class="position-btn">
+                                            <span class="btn-label">Center</span>
+                                            <span id="gameCenterPlayerName" class="assigned-player">Click to assign</span>
+                                        </button>
+                                        <button id="gameRightWingBtn" class="position-btn">
+                                            <span class="btn-label">Right Wing</span>
+                                            <span id="gameRightWingPlayerName" class="assigned-player">Click to assign</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Defence Positions -->
+                                <div class="position-group">
+                                    <h5>Defence</h5>
+                                    <div class="position-buttons">
+                                        <button id="gameLeftDefenceBtn" class="position-btn">
+                                            <span class="btn-label">Left Defence</span>
+                                            <span id="gameLeftDefencePlayerName" class="assigned-player">Click to assign</span>
+                                        </button>
+                                        <button id="gameRightDefenceBtn" class="position-btn">
+                                            <span class="btn-label">Right Defence</span>
+                                            <span id="gameRightDefencePlayerName" class="assigned-player">Click to assign</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- +/- Action Buttons -->
+                                <div class="plusminus-actions">
+                                    <button id="gamePlusBtn" class="plusminus-btn plus-btn">+ (Goal For)</button>
+                                    <button id="gameMinusBtn" class="plusminus-btn minus-btn">- (Goal Against)</button>
+                                    <button id="gameClearLineupBtn" class="action-btn reset-btn">Clear</button>
+                                </div>
+                            </div>
+
+                            <!-- +/- Events List -->
+                            <div class="plusminus-list-section">
+                                <h4>+/- Events:</h4>
+                                <div id="gamePlusMinusList" class="plusminus-list">
+                                    <p class="no-events">No +/- events recorded yet.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Faceoffs Stat View -->
+                        <div id="faceoffsStatView" class="stat-view">
+                            <!-- Faceoffs Section -->
+                            <div class="faceoffs-section">
+                                <h4>Faceoffs Tracking</h4>
+                                
+                                <!-- Player Selection for Faceoffs -->
+                                <div class="faceoffs-player-selection">
+                                    <div id="faceoffsPlayerButtons" class="faceoffs-player-buttons">
+                                        <!-- Player buttons will be dynamically added here -->
+                                    </div>
+                                </div>
+                                
+                                <!-- Faceoff Stats Table -->
+                                <div class="faceoff-stats-table">
+                                    <div class="faceoff-header">
+                                        <div class="faceoff-col-player">Player</div>
+                                        <div class="faceoff-col-taken">Faceoffs Taken</div>
+                                        <div class="faceoff-col-won">Faceoffs Won</div>
+                                        <div class="faceoff-col-actions">Actions</div>
+                                        <div class="faceoff-col-delete">Delete</div>
+                                    </div>
+                                    <div id="gameFaceoffPlayersList" class="faceoff-players-list">
+                                        <!-- Faceoff players will be added here dynamically -->
+                                    </div>
+                                </div>
+                            </div>
                 </div>
+
+                        <!-- Rink Stat View -->
+                        <div id="rinkStatView" class="stat-view active">
+                            <!-- Rink Section -->
+                            <div class="rink-section">
+                                <h4>Rink Shot Tracking</h4>
+                                
+                                <!-- Game Name Input -->
+                                <div class="game-name-section">
+                                    <label for="gameNameInput">Game Name:</label>
+                                    <input type="text" id="gameNameInput" placeholder="Enter game name..." maxlength="50">
+                                </div>
 
                 <!-- Status Display -->
-                <div id="statusDisplay" class="status-display">
-                    <span id="statusText">SCORE - AGAINST</span>
+                                <div id="gameStatusDisplay" class="status-display">
+                                    <span id="gameStatusText">SCORE - AGAINST</span>
                 </div>
-
-            <!-- Action Buttons Bar 
-            <div class="action-bar">
-                <button id="undoBtn" class="action-btn undo-btn">UNDO</button>
-                <button id="resetBtn" class="action-btn reset-btn">RESET</button>
-                <button id="exportBtn" class="action-btn export-btn">EXPORT</button>
-                <button id="importBtn" class="action-btn import-btn">IMPORT</button>
-            </div>-->
 
             <!-- Control Panel -->
             <div class="control-panel">
                 <!-- Result Toggles -->
                 <div class="control-group">
-                    <h3>Result</h3>
+                                        <h5>Result</h5>
                     <div class="toggle-buttons">
-                        <button id="scoreBtn" class="toggle-btn active" data-state="score">SCORE!</button>
-                        <button id="missBtn" class="toggle-btn" data-state="miss">MISS</button>
-                    </div>
-                </div>
-
-                <!-- Player/Team Selection -->
-                <div class="control-group player-selection-group">
-                    <h3>Player / Team</h3>
-                    <div id="playerButtons" class="player-buttons">
-                        <!-- Player buttons will be dynamically added here -->
-                    </div>
-                    <div class="toggle-buttons">
-                        <button id="againstBtn" class="toggle-btn" data-state="against">AGAINST</button>
+                                            <button id="gameScoreBtn" class="toggle-btn active" data-state="score">SCORE!</button>
+                                            <button id="gameMissBtn" class="toggle-btn" data-state="miss">MISS</button>
                     </div>
                 </div>
             </div>
 
             <!-- Legend -->
             <div class="legend">
-                <h3>Legend</h3>
+                                    <h5>Legend</h5>
                 <div class="legend-items">
                     <div class="legend-item">
                         <div class="marker-preview score-for"></div>
@@ -119,230 +348,90 @@
 
             <!-- Period Selection -->
             <div class="period-selection">
-                <button id="period1Btn" class="period-btn active">Period 1</button>
-                <button id="period2Btn" class="period-btn">Period 2</button>
-                <button id="period3Btn" class="period-btn">Period 3</button>
-                <button id="periodAllBtn" class="period-btn">All</button>
+                                    <button id="gamePeriod1Btn" class="period-btn active">Period 1</button>
+                                    <button id="gamePeriod2Btn" class="period-btn">Period 2</button>
+                                    <button id="gamePeriod3Btn" class="period-btn">Period 3</button>
+                                    <button id="gamePeriodAllBtn" class="period-btn">All</button>
             </div>
 
             <!-- Attack Direction Button -->
             <div class="attack-direction-section">
-                <button id="toggleDirectionBtn" class="direction-btn">
+                                    <button id="gameToggleDirectionBtn" class="direction-btn">
                     <span class="direction-arrow">←</span>
                     <span class="direction-text">Attacking Left</span>
                 </button>
+            </div>
+
+            <!-- Player Selection Below Direction -->
+            <div class="player-selection-below-direction">
+                <div id="gamePlayerButtons" class="player-buttons-full-width">
+                    <!-- Player buttons will be dynamically added here -->
+                </div>
+                <div class="against-button-container">
+                    <button id="gameAgainstBtn" class="toggle-btn against-btn-below" data-state="against">AGAINST</button>
+                </div>
             </div>
 
             <!-- Rink and Stats Container -->
             <div class="rink-stats-container">
                 <!-- FOR Stats (Left) -->
                 <div class="side-stats left-stats">
-                    <h4>FOR</h4>
+                                        <h5>FOR</h5>
                     <div class="stat-item">
                         <span class="stat-label">Shots</span>
-                        <span id="forShots" class="stat-value">0</span>
+                                            <span id="gameForShots" class="stat-value">0</span>
                     </div>
                     <div class="stat-item">
                         <span class="stat-label">Scores</span>
-                        <span id="forScores" class="stat-value">0</span>
+                                            <span id="gameForScores" class="stat-value">0</span>
                     </div>
                     <div class="stat-item">
                         <span class="stat-label">Misses</span>
-                        <span id="forMisses" class="stat-value">0</span>
+                                            <span id="gameForMisses" class="stat-value">0</span>
                     </div>
                 </div>
 
                 <!-- Rink Canvas -->
                 <div class="rink-container">
-                    <canvas id="rinkCanvas" width="800" height="425"></canvas>
-                    <div id="shotTooltip" class="shot-tooltip"></div>
+                                        <canvas id="gameRinkCanvas" width="800" height="425"></canvas>
+                                        <div id="gameShotTooltip" class="shot-tooltip"></div>
                 </div>
 
                 <!-- AGAINST Stats (Right) -->
                 <div class="side-stats right-stats">
-                    <h4>AGAINST</h4>
+                                        <h5>AGAINST</h5>
                     <div class="stat-item">
                         <span class="stat-label">Shots</span>
-                        <span id="againstShots" class="stat-value">0</span>
+                                            <span id="gameAgainstShots" class="stat-value">0</span>
                     </div>
                     <div class="stat-item">
                         <span class="stat-label">Scores</span>
-                        <span id="againstScores" class="stat-value">0</span>
+                                            <span id="gameAgainstScores" class="stat-value">0</span>
                     </div>
                     <div class="stat-item">
                         <span class="stat-label">Misses</span>
-                        <span id="againstMisses" class="stat-value">0</span>
+                                            <span id="gameAgainstMisses" class="stat-value">0</span>
                     </div>
                 </div>
             </div>
+
             <!-- Action Buttons Bar -->
             <div class="action-bar">
-                <button id="undoBtn" class="action-btn undo-btn">UNDO</button>
-                <button id="resetBtn" class="action-btn reset-btn">RESET</button>
-                <button id="exportBtn" class="action-btn export-btn">EXPORT</button>
-                <button id="importBtn" class="action-btn import-btn">IMPORT</button>
-            </div>
-            </div>
-            <!-- End Rink View -->
-
-            <!-- Stats View -->
-            <div id="statsView" class="tab-content">
-                <div class="stats-management">
-                    
-                    
-                    <!-- Game Name Section -->
-                    <div class="stats-game-name-section">
-                        <label for="statsGameNameInput">Game Name:</label>
-                        <input type="text" id="statsGameNameInput" placeholder="Enter game name (e.g., vs Maple Leafs)" maxlength="50">
-                    </div>
-
-                    <!-- Stats Actions -->
-                    <div class="stats-actions">
-                        <button id="exportStatsBtn" class="action-btn export-btn">Export Stats</button>
-                        <button id="importStatsBtn" class="action-btn import-btn">Import Stats</button>
-                    </div>
-
-                    <!-- Player Selection List -->
-                    <div class="stats-players-section">
-                        <h3>Select Players:</h3>
-                        <div id="statsPlayersList" class="stats-players-list">
-                            <p class="no-players">No players available. Add players in the Players tab.</p>
-                        </div>
-                    </div>
-
-                    <!-- Stats Sub-Tabs -->
-                    <div class="stats-subtab-navigation">
-                        <button id="goalsAssistsSubTab" class="stats-subtab-btn active">Goals & Assists</button>
-                        <button id="lineupSubTab" class="stats-subtab-btn">Lineup +/-</button>
-                        <button id="faceoffsSubTab" class="stats-subtab-btn">Faceoffs</button>
-                    </div>
-
-                    <!-- Goals & Assists Sub-View -->
-                    <div id="goalsAssistsSubView" class="stats-subcontent active">
-                    <!-- Goal & Assists Assignment -->
-                    <div class="goal-assists-section">
-                        <h3>Record Goal & Assists</h3>
-                        
-                        <div class="assignment-buttons">
-                            <div class="assignment-slot">
-                                <button id="goalBtn" class="assignment-btn goal-btn">
-                                    <span class="btn-label">Goal</span>
-                                    <span id="goalPlayerName" class="assigned-player">Click to assign</span>
-                                </button>
+                                    <button id="gameUndoBtn" class="action-btn undo-btn">UNDO</button>
+                                    <button id="gameResetBtn" class="action-btn reset-btn">RESET</button>
+                                    <button id="gameExportBtn" class="action-btn export-btn">EXPORT</button>
+                                    <button id="gameImportBtn" class="action-btn import-btn">IMPORT</button>
                             </div>
-                            <div class="assignment-slot">
-                                <button id="assist1Btn" class="assignment-btn assist-btn">
-                                    <span class="btn-label">Assist 1</span>
-                                    <span id="assist1PlayerName" class="assigned-player">Click to assign</span>
-                                </button>
-                            </div>
-                            <div class="assignment-slot">
-                                <button id="assist2Btn" class="assignment-btn assist-btn">
-                                    <span class="btn-label">Assist 2</span>
-                                    <span id="assist2PlayerName" class="assigned-player">Click to assign</span>
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="submit-clear-buttons">
-                            <button id="submitGoalBtn" class="action-btn export-btn">Submit</button>
-                            <button id="clearAssignmentsBtn" class="action-btn reset-btn">Clear</button>
-                        </div>
-                    </div>
-
-                    <!-- Goals List -->
-                    <div class="goals-list-section">
-                        <h3>Goals Recorded:</h3>
-                        <div id="goalsList" class="goals-list">
-                            <p class="no-goals">No goals recorded yet.</p>
-                        </div>
-                    </div>
-                    </div>
-                    <!-- End Goals & Assists Sub-View -->
-
-                    <!-- Lineup +/- Sub-View -->
-                    <div id="lineupSubView" class="stats-subcontent">
-                    <!-- Lineup +/- Section -->
-                    <div class="lineup-section">
-                        <h3>Lineup +/-</h3>
-                        
-                        <!-- Forward Positions -->
-                        <div class="position-group">
-                            <h4>Forwards</h4>
-                            <div class="position-buttons">
-                                <button id="leftWingBtn" class="position-btn">
-                                    <span class="btn-label">Left Wing</span>
-                                    <span id="leftWingPlayerName" class="assigned-player">Click to assign</span>
-                                </button>
-                                <button id="centerBtn" class="position-btn">
-                                    <span class="btn-label">Center</span>
-                                    <span id="centerPlayerName" class="assigned-player">Click to assign</span>
-                                </button>
-                                <button id="rightWingBtn" class="position-btn">
-                                    <span class="btn-label">Right Wing</span>
-                                    <span id="rightWingPlayerName" class="assigned-player">Click to assign</span>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Defence Positions -->
-                        <div class="position-group">
-                            <h4>Defence</h4>
-                            <div class="position-buttons">
-                                <button id="leftDefenceBtn" class="position-btn">
-                                    <span class="btn-label">Left Defence</span>
-                                    <span id="leftDefencePlayerName" class="assigned-player">Click to assign</span>
-                                </button>
-                                <button id="rightDefenceBtn" class="position-btn">
-                                    <span class="btn-label">Right Defence</span>
-                                    <span id="rightDefencePlayerName" class="assigned-player">Click to assign</span>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- +/- Action Buttons -->
-                        <div class="plusminus-actions">
-                            <button id="plusBtn" class="plusminus-btn plus-btn">+ (Goal For)</button>
-                            <button id="minusBtn" class="plusminus-btn minus-btn">- (Goal Against)</button>
-                            <button id="clearLineupBtn" class="action-btn reset-btn">Clear</button>
-                        </div>
-                    </div>
-
-                    <!-- +/- Events List -->
-                    <div class="plusminus-list-section">
-                        <h3>+/- Events:</h3>
-                        <div id="plusMinusList" class="plusminus-list">
-                            <p class="no-events">No +/- events recorded yet.</p>
-                        </div>
-                    </div>
-                    </div>
-                    <!-- End Lineup +/- Sub-View -->
-
-                    <!-- Faceoffs Sub-View -->
-                    <div id="faceoffsSubView" class="stats-subcontent">
-                    <!-- Faceoffs Section -->
-                    <div class="faceoffs-section">
-                        <h3>Faceoffs Tracking</h3>
-                        
-                        <!-- Faceoff Stats Table -->
-                        <div class="faceoff-stats-table">
-                            <div class="faceoff-header">
-                                <div class="faceoff-col-player">Player</div>
-                                <div class="faceoff-col-taken">Faceoffs Taken</div>
-                                <div class="faceoff-col-won">Faceoffs Won</div>
-                                <div class="faceoff-col-actions">Actions</div>
-                                <div class="faceoff-col-delete">Delete</div>
-                            </div>
-                            <div id="faceoffPlayersList" class="faceoff-players-list">
-                                <!-- Faceoff players will be added here dynamically -->
                             </div>
                         </div>
                     </div>
-                    </div>
-                    <!-- End Faceoffs Sub-View -->
                 </div>
             </div>
-            <!-- End Stats View -->
+            <!-- End Games View -->
+
+
+            </div>
+            <!-- End Main App -->
 
         </main>
 
@@ -369,6 +458,291 @@
             <div class="modal-footer">
                 <button id="modalCancelBtn" class="modal-btn modal-cancel-btn">Cancel</button>
                 <button id="modalOkBtn" class="modal-btn modal-ok-btn">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="auth-modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content auth-modal-content">
+            <div class="modal-header">
+                <h3>Login to Hockey Tracker</h3>
+                <button class="modal-close-btn" id="loginCloseBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="loginForm" class="auth-form">
+                    <div class="form-group">
+                        <label for="loginUsername">Username or Email:</label>
+                        <input type="text" id="loginUsername" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Password:</label>
+                        <input type="password" id="loginPassword" name="password" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="auth-submit-btn">Login</button>
+                        <button type="button" class="auth-switch-btn" id="switchToRegister">Need an account? Register</button>
+                    </div>
+                </form>
+                <div id="loginError" class="error-message hidden"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="registerModal" class="auth-modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content auth-modal-content">
+            <div class="modal-header">
+                <h3>Create Account</h3>
+                <button class="modal-close-btn" id="registerCloseBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="registerForm" class="auth-form">
+                    <div class="form-group">
+                        <label for="registerUsername">Username:</label>
+                        <input type="text" id="registerUsername" name="username" required minlength="3">
+                    </div>
+                    <div class="form-group">
+                        <label for="registerEmail">Email:</label>
+                        <input type="email" id="registerEmail" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerPassword">Password:</label>
+                        <input type="password" id="registerPassword" name="password" required minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label for="registerFullName">Full Name (optional):</label>
+                        <input type="text" id="registerFullName" name="fullName">
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="auth-submit-btn">Create Account</button>
+                        <button type="button" class="auth-switch-btn" id="switchToLogin">Already have an account? Login</button>
+                    </div>
+                </form>
+                <div id="registerError" class="error-message hidden"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Management Modal -->
+    <div id="profileModal" class="auth-modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content auth-modal-content">
+            <div class="modal-header">
+                <h3>Manage Profile</h3>
+                <button class="modal-close-btn" id="profileCloseBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="profile-tabs">
+                    <button class="profile-tab-btn active" data-tab="profile">Profile Info</button>
+                    <button class="profile-tab-btn" data-tab="password">Change Password</button>
+                    <button class="profile-tab-btn" data-tab="account">Account Settings</button>
+                </div>
+
+                <!-- Profile Info Tab -->
+                <div id="profileInfoTab" class="profile-tab-content active">
+                    <form id="profileForm" class="auth-form">
+                        <div class="form-group">
+                            <label for="profileUsername">Username:</label>
+                            <input type="text" id="profileUsername" name="username" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="profileEmail">Email:</label>
+                            <input type="email" id="profileEmail" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="profileFullName">Full Name:</label>
+                            <input type="text" id="profileFullName" name="fullName">
+                        </div>
+                            <div class="form-group">
+                                <div class="team-section-header">
+                                    <label>Teams:</label>
+                                    <button type="button" id="addTeamBtn" class="add-team-btn">+ Add Team</button>
+                                </div>
+                                
+                                <!-- Add Team Form (hidden by default) -->
+                                <div id="addTeamForm" class="add-team-form hidden">
+                                    <div class="form-group">
+                                        <input type="text" id="newTeamName" name="teamName" placeholder="Enter team name..." required>
+                                        <div class="team-type-selection">
+                                            <label>
+                                                <input type="radio" name="teamType" value="create" checked>
+                                                Create Team
+                                            </label>
+                                            <label>
+                                                <input type="radio" name="teamType" value="join">
+                                                Add Shared Team
+                                            </label>
+                                        </div>
+                                        <div class="add-team-actions">
+                                            <button type="button" id="saveTeamBtn" class="save-team-btn">Save</button>
+                                            <button type="button" id="cancelTeamBtn" class="cancel-team-btn">Cancel</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                
+                                <!-- Teams List -->
+                                <div id="profileTeamsList" class="profile-teams-list">
+                                    <!-- Teams will be populated here -->
+                                </div>
+                            </div>
+                        <div class="form-actions">
+                            <button type="submit" class="auth-submit-btn">Update Profile</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Change Password Tab -->
+                <div id="passwordTab" class="profile-tab-content">
+                    <form id="passwordForm" class="auth-form">
+                        <div class="form-group">
+                            <label for="currentPassword">Current Password:</label>
+                            <input type="password" id="currentPassword" name="currentPassword" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="newPassword">New Password:</label>
+                            <input type="password" id="newPassword" name="newPassword" required minlength="6">
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirm New Password:</label>
+                            <input type="password" id="confirmPassword" name="confirmPassword" required minlength="6">
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="auth-submit-btn">Change Password</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Account Settings Tab -->
+                <div id="accountTab" class="profile-tab-content">
+                    <div class="account-actions">
+                        <div class="danger-zone">
+                            <h4>Danger Zone</h4>
+                            <p>Permanently delete your account and all associated data.</p>
+                            <button id="deleteAccountBtn" class="danger-btn">Delete Account</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="profileError" class="error-message hidden"></div>
+                <div id="profileSuccess" class="success-message hidden"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Team Switching Modal -->
+    <div id="teamSwitchModal" class="auth-modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content auth-modal-content">
+            <div class="modal-header">
+                <h3>Switch Team</h3>
+                <button class="modal-close-btn" id="teamSwitchCloseBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="team-switch-content">
+                    <p>Select a team to switch to:</p>
+                    <div id="teamSwitchList" class="team-switch-list">
+                        <!-- Teams will be populated here -->
+                    </div>
+                </div>
+                <div id="teamSwitchError" class="error-message hidden"></div>
+                <div id="teamSwitchSuccess" class="success-message hidden"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Team Edit Modal -->
+    <div id="teamEditModal" class="auth-modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content auth-modal-content">
+            <div class="modal-header">
+                <h3>Edit Team</h3>
+                <button class="modal-close-btn" id="teamEditCloseBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="teamEditForm" class="auth-form">
+                    <div class="form-group">
+                        <label for="editTeamName">Team Name:</label>
+                        <input type="text" id="editTeamName" name="teamName" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="auth-submit-btn">Update Team</button>
+                    </div>
+                </form>
+                <div id="teamEditError" class="error-message hidden"></div>
+                <div id="teamEditSuccess" class="success-message hidden"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Team Delete Confirmation Modal -->
+    <div id="teamDeleteModal" class="auth-modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content auth-modal-content">
+            <div class="modal-header">
+                <h3>Delete Team</h3>
+                <button class="modal-close-btn" id="teamDeleteCloseBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="delete-confirmation">
+                    <p id="deleteConfirmMessage">Are you sure you want to delete this team?</p>
+                    <div class="form-actions">
+                        <button type="button" id="confirmDeleteBtn" class="danger-btn">Delete Team</button>
+                        <button type="button" id="cancelDeleteBtn" class="auth-submit-btn">Cancel</button>
+                    </div>
+                </div>
+                <div id="teamDeleteError" class="error-message hidden"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Team Management Modal -->
+    <div id="teamManagementModal" class="auth-modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content auth-modal-content">
+            <div class="modal-header">
+                <h3>Manage Teams</h3>
+                <button class="modal-close-btn" id="teamManagementCloseBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="team-management-content">
+                    <!-- Create New Team -->
+                    <div class="team-section">
+                        <h4>Create New Team</h4>
+                        <form id="createTeamForm" class="team-form">
+                            <div class="form-group">
+                                <label for="createTeamName">Team Name:</label>
+                                <input type="text" id="createTeamName" name="teamName" required>
+                            </div>
+                            <div class="team-type-selection">
+                                <label>
+                                    <input type="radio" name="teamType" value="create" checked>
+                                    Create Team
+                                </label>
+                                <label>
+                                    <input type="radio" name="teamType" value="join">
+                                    Add Shared Team
+                                </label>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="auth-submit-btn">Create Team</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Existing Teams -->
+                    <div class="team-section">
+                        <h4>Your Teams</h4>
+                        <div id="teamsList" class="teams-list">
+                            <!-- Teams will be populated here -->
+                        </div>
+                    </div>
+                </div>
+                <div id="teamManagementError" class="error-message hidden"></div>
+                <div id="teamManagementSuccess" class="success-message hidden"></div>
             </div>
         </div>
     </div>
